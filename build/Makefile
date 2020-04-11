@@ -111,84 +111,44 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named towr_monoped
+# Target rules for targets named towr_raisim
 
 # Build rule for target.
-towr_monoped: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 towr_monoped
-.PHONY : towr_monoped
+towr_raisim: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 towr_raisim
+.PHONY : towr_raisim
 
 # fast build rule for target.
-towr_monoped/fast:
-	$(MAKE) -f CMakeFiles/towr_monoped.dir/build.make CMakeFiles/towr_monoped.dir/build
-.PHONY : towr_monoped/fast
+towr_raisim/fast:
+	$(MAKE) -f CMakeFiles/towr_raisim.dir/build.make CMakeFiles/towr_raisim.dir/build
+.PHONY : towr_raisim/fast
 
-#=============================================================================
-# Target rules for targets named monoped_raisim
+monoped_towr_raisim_ik.o: monoped_towr_raisim_ik.cpp.o
 
-# Build rule for target.
-monoped_raisim: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 monoped_raisim
-.PHONY : monoped_raisim
-
-# fast build rule for target.
-monoped_raisim/fast:
-	$(MAKE) -f CMakeFiles/monoped_raisim.dir/build.make CMakeFiles/monoped_raisim.dir/build
-.PHONY : monoped_raisim/fast
-
-monoped_raisim.o: monoped_raisim.cpp.o
-
-.PHONY : monoped_raisim.o
+.PHONY : monoped_towr_raisim_ik.o
 
 # target to build an object file
-monoped_raisim.cpp.o:
-	$(MAKE) -f CMakeFiles/monoped_raisim.dir/build.make CMakeFiles/monoped_raisim.dir/monoped_raisim.cpp.o
-.PHONY : monoped_raisim.cpp.o
+monoped_towr_raisim_ik.cpp.o:
+	$(MAKE) -f CMakeFiles/towr_raisim.dir/build.make CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik.cpp.o
+.PHONY : monoped_towr_raisim_ik.cpp.o
 
-monoped_raisim.i: monoped_raisim.cpp.i
+monoped_towr_raisim_ik.i: monoped_towr_raisim_ik.cpp.i
 
-.PHONY : monoped_raisim.i
-
-# target to preprocess a source file
-monoped_raisim.cpp.i:
-	$(MAKE) -f CMakeFiles/monoped_raisim.dir/build.make CMakeFiles/monoped_raisim.dir/monoped_raisim.cpp.i
-.PHONY : monoped_raisim.cpp.i
-
-monoped_raisim.s: monoped_raisim.cpp.s
-
-.PHONY : monoped_raisim.s
-
-# target to generate assembly for a file
-monoped_raisim.cpp.s:
-	$(MAKE) -f CMakeFiles/monoped_raisim.dir/build.make CMakeFiles/monoped_raisim.dir/monoped_raisim.cpp.s
-.PHONY : monoped_raisim.cpp.s
-
-towr_monoped.o: towr_monoped.cpp.o
-
-.PHONY : towr_monoped.o
-
-# target to build an object file
-towr_monoped.cpp.o:
-	$(MAKE) -f CMakeFiles/towr_monoped.dir/build.make CMakeFiles/towr_monoped.dir/towr_monoped.cpp.o
-.PHONY : towr_monoped.cpp.o
-
-towr_monoped.i: towr_monoped.cpp.i
-
-.PHONY : towr_monoped.i
+.PHONY : monoped_towr_raisim_ik.i
 
 # target to preprocess a source file
-towr_monoped.cpp.i:
-	$(MAKE) -f CMakeFiles/towr_monoped.dir/build.make CMakeFiles/towr_monoped.dir/towr_monoped.cpp.i
-.PHONY : towr_monoped.cpp.i
+monoped_towr_raisim_ik.cpp.i:
+	$(MAKE) -f CMakeFiles/towr_raisim.dir/build.make CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik.cpp.i
+.PHONY : monoped_towr_raisim_ik.cpp.i
 
-towr_monoped.s: towr_monoped.cpp.s
+monoped_towr_raisim_ik.s: monoped_towr_raisim_ik.cpp.s
 
-.PHONY : towr_monoped.s
+.PHONY : monoped_towr_raisim_ik.s
 
 # target to generate assembly for a file
-towr_monoped.cpp.s:
-	$(MAKE) -f CMakeFiles/towr_monoped.dir/build.make CMakeFiles/towr_monoped.dir/towr_monoped.cpp.s
-.PHONY : towr_monoped.cpp.s
+monoped_towr_raisim_ik.cpp.s:
+	$(MAKE) -f CMakeFiles/towr_raisim.dir/build.make CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik.cpp.s
+.PHONY : monoped_towr_raisim_ik.cpp.s
 
 # Help Target
 help:
@@ -197,15 +157,11 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... rebuild_cache"
+	@echo "... towr_raisim"
 	@echo "... edit_cache"
-	@echo "... towr_monoped"
-	@echo "... monoped_raisim"
-	@echo "... monoped_raisim.o"
-	@echo "... monoped_raisim.i"
-	@echo "... monoped_raisim.s"
-	@echo "... towr_monoped.o"
-	@echo "... towr_monoped.i"
-	@echo "... towr_monoped.s"
+	@echo "... monoped_towr_raisim_ik.o"
+	@echo "... monoped_towr_raisim_ik.i"
+	@echo "... monoped_towr_raisim_ik.s"
 .PHONY : help
 
 

@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <towr/terrain/examples/height_map_examples.h>
 #include <towr/nlp_formulation.h>
 #include <ifopt/ipopt_solver.h>
+#include <typeinfo>
 
 
 using namespace towr;
@@ -109,8 +110,18 @@ int main()
     Eigen::Vector3d rad = solution.base_angular_->GetPoint(t).p();
     cout << (rad/M_PI*180).transpose() << "\t[deg]" << endl;
 
+
+    Eigen::Vector3d a(solution.ee_motion_.at(0)->GetPoint(t).p().transpose()),b(0,0,0);
+                      // solution.ee_motion_.at(0)->GetPoint(t).p().transpose()(1),
+                      // solution.ee_motion_.at(0)->GetPoint(t).p().transpose()(2)),
     cout << "Foot position x,y,z:          \t";
-    cout << solution.ee_motion_.at(0)->GetPoint(t).p().transpose() << "\t[m]" << endl;
+    cout << solution.ee_motion_.at(0)->GetPoint(t).p().transpose() << "\t[m]" <<endl;
+
+    //cout << "a:"<< a << "\t" <<typeid(a).name()<<endl;
+
+    //cout << "a0:"<< a(0) << "\t" << "a1:"<< a(2) << "\t"<< "a2:"<< a(2) << "\t"<<endl;
+    //cout << "b:"<< b << "\t" <<typeid(b).name()<<endl;
+    
 
     cout << "Contact force x,y,z:          \t";
     cout << solution.ee_force_.at(0)->GetPoint(t).p().transpose() << "\t[N]" << endl;
@@ -121,6 +132,6 @@ int main()
 
     cout << endl;
 
-    t += 0.2;
+    t += 0.02;
   }
 }

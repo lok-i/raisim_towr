@@ -60,76 +60,39 @@ CMAKE_SOURCE_DIR = /home/lok/RBCCPS_projects/raisim_towr
 CMAKE_BINARY_DIR = /home/lok/RBCCPS_projects/raisim_towr/build
 
 #=============================================================================
-# Target rules for target CMakeFiles/towr_monoped.dir
+# Target rules for target CMakeFiles/towr_raisim.dir
 
 # All Build rule for target.
-CMakeFiles/towr_monoped.dir/all:
-	$(MAKE) -f CMakeFiles/towr_monoped.dir/build.make CMakeFiles/towr_monoped.dir/depend
-	$(MAKE) -f CMakeFiles/towr_monoped.dir/build.make CMakeFiles/towr_monoped.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/lok/RBCCPS_projects/raisim_towr/build/CMakeFiles --progress-num=3,4 "Built target towr_monoped"
-.PHONY : CMakeFiles/towr_monoped.dir/all
+CMakeFiles/towr_raisim.dir/all:
+	$(MAKE) -f CMakeFiles/towr_raisim.dir/build.make CMakeFiles/towr_raisim.dir/depend
+	$(MAKE) -f CMakeFiles/towr_raisim.dir/build.make CMakeFiles/towr_raisim.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/lok/RBCCPS_projects/raisim_towr/build/CMakeFiles --progress-num=1,2 "Built target towr_raisim"
+.PHONY : CMakeFiles/towr_raisim.dir/all
 
 # Include target in all.
-all: CMakeFiles/towr_monoped.dir/all
+all: CMakeFiles/towr_raisim.dir/all
 
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/towr_monoped.dir/rule: cmake_check_build_system
+CMakeFiles/towr_raisim.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/lok/RBCCPS_projects/raisim_towr/build/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/towr_monoped.dir/all
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/towr_raisim.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/lok/RBCCPS_projects/raisim_towr/build/CMakeFiles 0
-.PHONY : CMakeFiles/towr_monoped.dir/rule
+.PHONY : CMakeFiles/towr_raisim.dir/rule
 
 # Convenience name for target.
-towr_monoped: CMakeFiles/towr_monoped.dir/rule
+towr_raisim: CMakeFiles/towr_raisim.dir/rule
 
-.PHONY : towr_monoped
-
-# clean rule for target.
-CMakeFiles/towr_monoped.dir/clean:
-	$(MAKE) -f CMakeFiles/towr_monoped.dir/build.make CMakeFiles/towr_monoped.dir/clean
-.PHONY : CMakeFiles/towr_monoped.dir/clean
+.PHONY : towr_raisim
 
 # clean rule for target.
-clean: CMakeFiles/towr_monoped.dir/clean
-
-.PHONY : clean
-
-#=============================================================================
-# Target rules for target CMakeFiles/monoped_raisim.dir
-
-# All Build rule for target.
-CMakeFiles/monoped_raisim.dir/all:
-	$(MAKE) -f CMakeFiles/monoped_raisim.dir/build.make CMakeFiles/monoped_raisim.dir/depend
-	$(MAKE) -f CMakeFiles/monoped_raisim.dir/build.make CMakeFiles/monoped_raisim.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/lok/RBCCPS_projects/raisim_towr/build/CMakeFiles --progress-num=1,2 "Built target monoped_raisim"
-.PHONY : CMakeFiles/monoped_raisim.dir/all
-
-# Include target in all.
-all: CMakeFiles/monoped_raisim.dir/all
-
-.PHONY : all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/monoped_raisim.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/lok/RBCCPS_projects/raisim_towr/build/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/monoped_raisim.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/lok/RBCCPS_projects/raisim_towr/build/CMakeFiles 0
-.PHONY : CMakeFiles/monoped_raisim.dir/rule
-
-# Convenience name for target.
-monoped_raisim: CMakeFiles/monoped_raisim.dir/rule
-
-.PHONY : monoped_raisim
+CMakeFiles/towr_raisim.dir/clean:
+	$(MAKE) -f CMakeFiles/towr_raisim.dir/build.make CMakeFiles/towr_raisim.dir/clean
+.PHONY : CMakeFiles/towr_raisim.dir/clean
 
 # clean rule for target.
-CMakeFiles/monoped_raisim.dir/clean:
-	$(MAKE) -f CMakeFiles/monoped_raisim.dir/build.make CMakeFiles/monoped_raisim.dir/clean
-.PHONY : CMakeFiles/monoped_raisim.dir/clean
-
-# clean rule for target.
-clean: CMakeFiles/monoped_raisim.dir/clean
+clean: CMakeFiles/towr_raisim.dir/clean
 
 .PHONY : clean
 

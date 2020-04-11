@@ -22,11 +22,34 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+/*
+This code works the inverse kinematics 
+for the monoped and updates it in a gravity free 
+environment were the base (pd gains are true 
+for all values) is fixed and only 
+the angles are updated.
+
+*/
 
 #include <raisim/OgreVis.hpp>
 #include "raisimBasicImguiPanel.hpp"
 #include "raisimKeyboardCallback.hpp"
 #include "helper.hpp"
+#include <xpp_inv/hyqleg_inverse_kinematics.h>
+#include <xpp_inv/cartesian_declarations.h>
+
+
+
+
+//converts end effector from ground reference to base refernce such
+//that axes are parallel
+Eigen::Vector3d grnd_ref_to_base_ref(Eigen::Vector3d ee,Eigen::Vector3d base)
+{
+ Eigen::Vector3d offset_base_to_hip(0.0, 0.0, 0.15);
+ base = base -offset_base_to_hip;//base to hip offset
+
+ return(ee-base);
+}
 
 void setupCallback() {
   auto vis = raisim::OgreVis::get();
@@ -57,9 +80,10 @@ void setupCallback() {
 
 int main(int argc, char **argv) {
   /// create raisim world
+  xpp::HyqlegInverseKinematics leg;
   raisim::World world;
   
-  //world.setGravity({0,0,0}); // by default gravity is set to {0,0,g}
+  world.setGravity({0,0,0}); // by default gravity is set to {0,0,g}
   world.setTimeStep(0.0025);
 
   auto vis = raisim::OgreVis::get();
@@ -76,7 +100,6 @@ int main(int argc, char **argv) {
 
   //simulation is automatically stepped, if is false
   raisim::gui::manualStepping = false; 
-  //raisim::gui::Collisionbodies = true; 
   /// starts visualizer thread
   vis->initApp();
 
@@ -98,11 +121,11 @@ int main(int argc, char **argv) {
   auto monoped = world.addArticulatedSystem(raisim::loadResource("monoped/monoped.urdf"));
   auto monopedVis = vis->createGraphicalObject(monoped, "monoped");
   
-  monoped->setGeneralizedCoordinate({   0, 0, 0.95, //base co ordinates 
+  monoped->setGeneralizedCoordinate({   0, 0, 1, //base co ordinates 
                                         1, 0, 0, 0,  //orientation 
-                                        0, 0, 0});
+                                        0,0,0});
 
-
+//-3.14,-1.57,-2.91
 
   Eigen::VectorXd jointNominalConfig(monoped->getDOF()+1), jointVelocityTarget(monoped->getDOF());
   Eigen::VectorXd jointState(monoped->getDOF()), jointForce(monoped->getDOF()), jointPgain(monoped->getDOF()), jointDgain(monoped->getDOF());
@@ -110,9 +133,11 @@ int main(int argc, char **argv) {
   jointDgain.setZero();
   jointVelocityTarget.setZero();
   
+
  // P and D gains for the leg actuators alone
-  jointPgain.tail(3).setConstant(200.0);
-  jointDgain.tail(3).setConstant(10.0);
+ jointPgain.tail(9).setConstant(200.0);
+ jointDgain.tail(9).setConstant(10.0);
+
 
   monoped->setGeneralizedForce(Eigen::VectorXd::Zero(monoped->getDOF()));
   monoped->setControlMode(raisim::ControlMode::PD_PLUS_FEEDFORWARD_TORQUE);
@@ -128,15 +153,15 @@ int main(int argc, char **argv) {
 
 
   // lambda function for the controller
-  auto controller = [&monoped ,&generator, &distribution]() {
+  auto controller = [&monoped ,&generator, &distribution,&leg]() {
     static size_t controlDecimation = 0;
 
     if (controlDecimation++ % 2500 == 0)
-      monoped->setGeneralizedCoordinate({0, 0, 0.95,
+      monoped->setGeneralizedCoordinate({0, 0, 1,
 
                                         1, 0, 0,0, 
 
-                                        0, 0,0});
+                                        0,0,0});
 
     if (controlDecimation % 50 != 0)
     return;
@@ -144,29 +169,40 @@ int main(int argc, char **argv) {
     /// laikago joint PD controller
     Eigen::VectorXd jointNominalConfig(monoped->getDOF()+1), jointVelocityTarget(monoped->getDOF());
     jointVelocityTarget.setZero();
-    jointNominalConfig << 0, 0, 0, 
-                          0, 0, 0, 0, 
+    jointNominalConfig << 0, 0, 1, 
+                          1, 0, 0, 0, 
                           0, 0, 0;
 
-     for (size_t j = 0; j < N; j++) {
+
+Eigen::Vector3d Base(0,0,1);
+Eigen::Vector3d ee_grnd(0.1,0.1,0.6); //end effector wrt ground
+
+
+Eigen::Vector3d ee_H = grnd_ref_to_base_ref(ee_grnd,Base);//end effector wrt base
+Eigen::VectorXd q0 =leg.GetJointAngles(ee_H);
+
+
+
+
+  for (size_t i = 0; i < N; i++) 
       
       for (size_t j = 0; j < N; j++) {
-             jointNominalConfig.setZero();
+ 
+          jointNominalConfig << 0, 0, 0.5, -1, 0, 0, 0, 0,0 ,0;
 
         for (size_t k = 0; k < monoped->getGeneralizedCoordinateDim() ; k++)
         {
         
-
-         jointNominalConfig(k) += distribution(generator);
+         if(k>=7)
+          jointNominalConfig(k)=q0(k-7);//distribution(generator);
 
 
          }
        
-         //std::cout<<monoped->getGeneralizedCoordinateDim();
       
         monoped->setPdTarget(jointNominalConfig, jointVelocityTarget);
     
-      }}
+      }
     
 
     
@@ -187,6 +223,8 @@ int main(int argc, char **argv) {
 
   /// terminate
   vis->closeApp();
+
+
 
   return 0;
 }
