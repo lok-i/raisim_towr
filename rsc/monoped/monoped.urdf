@@ -2,14 +2,14 @@
     <link name="base">
         <inertial>
          <origin xyz ="0 0 0" rpy="0 0 0"/>
-         <mass value="0.18"/>
+         <mass value="20"/>
          <inertia
-           ixx="0.0002835"
-           ixy="0.0"
-           ixz="0.0"
-           iyy="0.0002835"
-           iyz="0.0"
-           izz="0.000324" />
+           ixx="0"
+           ixy="0"
+           ixz="0"
+           iyy="0.0"
+           iyz="0"
+           izz="0" />
                    
         </inertial>
 
@@ -79,7 +79,7 @@
 
         <inertial>
             <origin xyz ="0 0 0" rpy="0 0 0"/>
-            <mass value="0.18"/>
+            <mass value="0.2"/>
             <inertia
             ixx="0.0002835"
             ixy="0.0"
@@ -109,7 +109,7 @@
 	    
         <inertial>
             <origin xyz ="0 0 0" rpy="0 0 0"/>
-            <mass value="0.18"/>
+            <mass value="0.2"/>
             <inertia
             ixx="0.0002835"
             ixy="0.0"
