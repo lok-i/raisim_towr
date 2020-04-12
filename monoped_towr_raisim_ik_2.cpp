@@ -36,9 +36,10 @@
 #include <ifopt/ipopt_solver.h>
 #include <typeinfo>
 
-#define base_height_initial 0.5
+#define base_height_initial 0.53
 #define gravity true
 #define actuators_only true
+#define PD_tuning_mode true
 
 using namespace towr;
 
@@ -184,9 +185,14 @@ std::cout.tie(0);
 
 NlpFormulation formulation; SplineHolder solution;
 Eigen::Vector3d Target_ee;   
-std::cout<<"Enter target co_ordinates:";
+std::cout<<"Enter target end effector co_ordinates:"<<std::endl;
 for (int i =0;i<3;i++)
 std::cin>>Target_ee(i);
+float P_gain = 200.0,D_gain =10.0;
+if(PD_tuning_mode){
+std::cout<<"Enter P and D gains:"<<std::endl;
+std::cin>>P_gain>>D_gain;
+}
 towr_trajectory(formulation,solution,Target_ee);
 // std::cout<< typeid(solution.ee_motion_.at(0)->GetPoint(0).p().transpose()).name()<<"\n";
 // std::cout<<typeid(solution.ee_motion_.at(0)->GetPoint(0).p().transpose()).name();
@@ -249,13 +255,13 @@ towr_trajectory(formulation,solution,Target_ee);
  // P and D gains for the leg actuators alone
   if (actuators_only)
   
-  {jointPgain.tail(3).setConstant(200.0);
-  jointDgain.tail(3).setConstant(10.0);}
+  {jointPgain.tail(3).setConstant(P_gain);
+   jointDgain.tail(3).setConstant(D_gain);}
 
   else
   {
 
-     for(int i =0;i<10;i++)
+     for(int k =0;k<9;k++)
      {
       if(k<=2)//for base linear posn
       {
@@ -274,12 +280,12 @@ towr_trajectory(formulation,solution,Target_ee);
         }
         else //for actuators
         {
-        jointPgain(k)=200.0;
-        jointDgain(k)=10.0;
+        jointPgain(k)=P_gain;
+        jointDgain(k)=D_gain;
         }
 
      
-      }}
+      }}}
 
   monoped->setGeneralizedForce(Eigen::VectorXd::Zero(monoped->getDOF()));
   monoped->setControlMode(raisim::ControlMode::PD_PLUS_FEEDFORWARD_TORQUE);

@@ -32,4 +32,4 @@ endfunction()
 #target_link_libraries(towr_monoped PUBLIC towr::towr) # adds include directories and libraries
 
 #create_executable(raisim_ik monoped_raisim_ik.cpp)
-create_executable(towr_raisim monoped_towr_raisim_ik.cpp)
+create_executable(towr_raisim monoped_towr_raisim_ik_2.cpp)

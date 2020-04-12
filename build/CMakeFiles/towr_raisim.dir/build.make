@@ -57,38 +57,38 @@ include CMakeFiles/towr_raisim.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/towr_raisim.dir/flags.make
 
-CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik.cpp.o: CMakeFiles/towr_raisim.dir/flags.make
-CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik.cpp.o: ../monoped_towr_raisim_ik.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lok/RBCCPS_projects/raisim_towr/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik.cpp.o -c /home/lok/RBCCPS_projects/raisim_towr/monoped_towr_raisim_ik.cpp
+CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik_2.cpp.o: CMakeFiles/towr_raisim.dir/flags.make
+CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik_2.cpp.o: ../monoped_towr_raisim_ik_2.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lok/RBCCPS_projects/raisim_towr/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik_2.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik_2.cpp.o -c /home/lok/RBCCPS_projects/raisim_towr/monoped_towr_raisim_ik_2.cpp
 
-CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lok/RBCCPS_projects/raisim_towr/monoped_towr_raisim_ik.cpp > CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik.cpp.i
+CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik_2.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik_2.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lok/RBCCPS_projects/raisim_towr/monoped_towr_raisim_ik_2.cpp > CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik_2.cpp.i
 
-CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lok/RBCCPS_projects/raisim_towr/monoped_towr_raisim_ik.cpp -o CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik.cpp.s
+CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik_2.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik_2.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lok/RBCCPS_projects/raisim_towr/monoped_towr_raisim_ik_2.cpp -o CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik_2.cpp.s
 
-CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik.cpp.o.requires:
+CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik_2.cpp.o.requires:
 
-.PHONY : CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik.cpp.o.requires
+.PHONY : CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik_2.cpp.o.requires
 
-CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik.cpp.o.provides: CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik.cpp.o.requires
-	$(MAKE) -f CMakeFiles/towr_raisim.dir/build.make CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik.cpp.o.provides.build
-.PHONY : CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik.cpp.o.provides
+CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik_2.cpp.o.provides: CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik_2.cpp.o.requires
+	$(MAKE) -f CMakeFiles/towr_raisim.dir/build.make CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik_2.cpp.o.provides.build
+.PHONY : CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik_2.cpp.o.provides
 
-CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik.cpp.o.provides.build: CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik.cpp.o
+CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik_2.cpp.o.provides.build: CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik_2.cpp.o
 
 
 # Object files for target towr_raisim
 towr_raisim_OBJECTS = \
-"CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik.cpp.o"
+"CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik_2.cpp.o"
 
 # External object files for target towr_raisim
 towr_raisim_EXTERNAL_OBJECTS =
 
-towr_raisim: CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik.cpp.o
+towr_raisim: CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik_2.cpp.o
 towr_raisim: CMakeFiles/towr_raisim.dir/build.make
 towr_raisim: /home/lok/Raisim/raisim_build/lib/libraisimOgre.so
 towr_raisim: /usr/local/lib/libifopt_ipopt.so
@@ -114,7 +114,7 @@ CMakeFiles/towr_raisim.dir/build: towr_raisim
 
 .PHONY : CMakeFiles/towr_raisim.dir/build
 
-CMakeFiles/towr_raisim.dir/requires: CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik.cpp.o.requires
+CMakeFiles/towr_raisim.dir/requires: CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik_2.cpp.o.requires
 
 .PHONY : CMakeFiles/towr_raisim.dir/requires
 
