@@ -123,7 +123,7 @@ auto controller = [&monoped ,&leg, &world, &time_]()
   }
   else
   {
-    jointNominalConfig << 0, 0, 2,  1, 0, 0, 0,  1,1,1;  //abduction, knee, hip joint is the order of the data
+    jointNominalConfig << 0, 0, 2,  1, 0, 0, 0,  1,1,1;  //abduction,hip,knee joint is the order of the data
     monoped->setPdTarget(jointNominalConfig, jointVelocityTarget);
   }
   time_ += world.getTimeStep();
