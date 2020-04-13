@@ -1,3 +1,4 @@
+
 //
 // Created by Jemin Hwangbo on 10/15/10.
 // MIT License
@@ -36,6 +37,11 @@
 #include <ifopt/ipopt_solver.h>
 #include <typeinfo>
 using namespace towr;
+#define base_height_initial 1
+
+#define gravity false
+#define actuators_only false
+#define PD_tuning_mode false
 
 
 
@@ -49,99 +55,12 @@ Eigen::Vector3d grnd_ref_to_base_ref(Eigen::Vector3d ee,Eigen::Vector3d base)
  return(ee-base);
 }
 
-
-void towr_trajectory(NlpFormulation &formulation,SplineHolder &solution,Eigen::Vector3d i,Eigen::Vector3d ta)
-{
-
-
-  // terrain
-  formulation.terrain_ = std::make_shared<FlatGround>(0.0);
-
-  // Kinematic limits and dynamic parameters of the hopper
-  formulation.model_ = RobotModel(RobotModel::Monoped);
-
-  // set the initial position of the hopper
-  formulation.initial_base_.lin.at(kPos).z() = 0.5;
-  formulation.initial_ee_W_.push_back(Eigen::Vector3d::Zero());
-
-  // define the desired goal state of the hopper
-  formulation.final_base_.lin.at(towr::kPos) << 5.0, 0.0, 0;
-
-  // Parameters that define the motion. See c'tor for default values or
-  // other values that can be modified.
-  // First we define the initial phase durations, that can however be changed
-  // by the optimizer. The number of swing and stance phases however is fixed.
-  // alternating stance and swing:     ____-----_____-----_____-----_____
-  formulation.params_.ee_phase_durations_.push_back({0.4, 0.2, 0.4, 0.2, 0.4, 0.2, 0.2});
-  formulation.params_.ee_in_contact_at_start_.push_back(true);
-
-  // Initialize the nonlinear-programming problem with the variables,
-  // constraints and costs.
-  ifopt::Problem nlp;
-
-  for (auto c : formulation.GetVariableSets(solution))
-    nlp.AddVariableSet(c);
-  for (auto c : formulation.GetConstraints(solution))
-    nlp.AddConstraintSet(c);
-  for (auto c : formulation.GetCosts())
-    nlp.AddCostSet(c);
-
-  // You can add your own elements to the nlp as well, simply by calling:
-  // nlp.AddVariablesSet(your_custom_variables);
-  // nlp.AddConstraintSet(your_custom_constraints);
-
-  // Choose ifopt solver (IPOPT or SNOPT), set some parameters and solve.
-  // solver->SetOption("derivative_test", "first-order");
-  auto solver = std::make_shared<ifopt::IpoptSolver>();
-  solver->SetOption("jacobian_approximation", "exact"); // "finite difference-values"
-  solver->SetOption("max_cpu_time", 20.0);
-  solver->Solve(nlp);
-
-  // Can directly view the optimization variables through:
-  // Eigen::VectorXd x = nlp.GetVariableValues()
-  // However, it's more convenient to access the splines constructed from these
-  // variables and query their values at specific times:
-  using namespace std;
-  cout.precision(2);
-  nlp.PrintCurrent(); // view variable-set, constraint violations, indices,...
-  cout << fixed;
-  cout << "\n====================\nMonoped trajectory:\n====================\n";
-
-  double t = 0.0;
-  while (t<=solution.base_linear_->GetTotalTime() + 1e-5) {
-    cout << "t=" << t << "\n";
-    cout << "Base linear position x,y,z:   \t";
-    cout << solution.base_linear_->GetPoint(t).p().transpose() << "\t[m]" << endl;
-
-    cout << "Base Euler roll, pitch, yaw:  \t";
-    Eigen::Vector3d rad = solution.base_angular_->GetPoint(t).p();
-    cout << (rad/M_PI*180).transpose() << "\t[deg]" << endl;
-
-    
-    xpp::HyqlegInverseKinematics leg1;
-    Eigen::Vector3d end_factor_pt( solution.ee_motion_.at(0)->GetPoint(t).p().transpose());
-    Eigen::VectorXd q0 =leg1.GetJointAngles(end_factor_pt);
-    
-    cout << "Foot position x,y,z:          \t";
-    cout << solution.ee_motion_.at(0)->GetPoint(t).p().transpose() << "\t[m]" << endl;
-    cout << "Angle for actuator:"<< q0 <<endl;
-
-    cout << "Contact force x,y,z:          \t";
-    cout << solution.ee_force_.at(0)->GetPoint(t).p().transpose() << "\t[N]" << endl;
-
-    bool contact = solution.phase_durations_.at(0)->IsContactPhase(t);
-    std::string foot_in_contact = contact? "yes" : "no";
-    cout << "Foot in contact:              \t" + foot_in_contact << endl;
-
-    cout << endl;
-
-    t += 0.2;
+//trajectory follower for ik testing
+Eigen::Vector3d fn_modified_sine(float time , float amp = 0.05,float omega = 10)
+  {
+    Eigen::Vector3d end_effector_pos(amp*sin(time*omega), 0., amp*cos(time*omega) - 0.5);
+    return(end_effector_pos);
   }
-
-
-
-
-}
 
 void setupCallback() {
   auto vis = raisim::OgreVis::get();
@@ -176,19 +95,18 @@ int main(int argc, char **argv)
 std::ios_base::sync_with_stdio(false);
 std::cin.tie(0);
 std::cout.tie(0);
+float P_gain = 200.0,D_gain =10.0;
+if(PD_tuning_mode)
+  {
+  std::cout<<"Enter P and D gains:"<<std::endl;
+  std::cin>>P_gain>>D_gain;
+  }
 
-   NlpFormulation formulation; SplineHolder solution;
-
-towr_trajectory(formulation,solution,{0,0,0},{0,0,0});
-// std::cout<< typeid(solution.ee_motion_.at(0)->GetPoint(0).p().transpose()).name()<<"\n";
-// std::cout<<typeid(solution.ee_motion_.at(0)->GetPoint(0).p().transpose()).name();
-
-  /// create raisim world
-  xpp::HyqlegInverseKinematics leg;
-  raisim::World world;
-  
- //world.setGravity({0,0,0}); // by default gravity is set to {0,0,g}
-  world.setTimeStep(0.0025);
+xpp::HyqlegInverseKinematics leg;
+raisim::World world;
+if(!gravity)
+  world.setGravity({0,0,0}); // by default gravity is set to {0,0,g}
+world.setTimeStep(0.0025);
 
   auto vis = raisim::OgreVis::get();
 
@@ -203,7 +121,7 @@ towr_trajectory(formulation,solution,{0,0,0},{0,0,0});
   vis->setDesiredFPS(25);
 
   //simulation is automatically stepped, if is false
-  raisim::gui::manualStepping = true; 
+  raisim::gui::manualStepping = false; 
   //raisim::gui::Collisionbodies = true; 
   /// starts visualizer thread
   vis->initApp();
@@ -215,8 +133,7 @@ towr_trajectory(formulation,solution,{0,0,0},{0,0,0});
   /// create visualizer objects
   auto groundVis = vis->createGraphicalObject(ground, 20, "floor", "checkerboard_green");
 
-   const size_t N = 100;
-
+   
  
 
 
@@ -224,7 +141,7 @@ towr_trajectory(formulation,solution,{0,0,0},{0,0,0});
   auto monoped = world.addArticulatedSystem(raisim::loadResource("monoped/monoped.urdf"));
   auto monopedVis = vis->createGraphicalObject(monoped, "monoped");
   
-  monoped->setGeneralizedCoordinate({   0, 0, 0.5, //base co ordinates 
+  monoped->setGeneralizedCoordinate({   0, 0, base_height_initial, //base co ordinates 
                                         1, 0, 0, 0,  //orientation 
                                         0,1.09542,-2.3269});
 
@@ -237,9 +154,41 @@ towr_trajectory(formulation,solution,{0,0,0},{0,0,0});
   jointDgain.setZero();
   jointVelocityTarget.setZero();
   
- // P and D gains for the leg actuators alone
-  jointPgain.tail(3).setConstant(200.0);
-  jointDgain.tail(3).setConstant(10.0);
+if (actuators_only)
+  
+  {
+    jointPgain.tail(3).setConstant(P_gain);
+   jointDgain.tail(3).setConstant(D_gain);}
+
+  else
+  {
+
+     for(int k =0;k<9;k++)
+     {
+      if(k<=2)//for base linear posn
+      {
+        jointPgain(k)=P_gain;
+        jointDgain(k)=D_gain;
+
+      }
+      else
+      {
+
+        if(k<=5) //for base orientation
+        {
+          jointPgain(k)=2000.0;
+          jointDgain(k)=100.0;
+
+        }
+        else //for actuators
+        {
+        jointPgain(k)=P_gain;
+        jointDgain(k)=D_gain;
+        }
+
+     
+      }}}
+
 
   monoped->setGeneralizedForce(Eigen::VectorXd::Zero(monoped->getDOF()));
   monoped->setControlMode(raisim::ControlMode::PD_PLUS_FEEDFORWARD_TORQUE);
@@ -250,19 +199,19 @@ towr_trajectory(formulation,solution,{0,0,0},{0,0,0});
   std::default_random_engine generator;
   std::normal_distribution<double> distribution(0.0, 0.7);
   std::srand(std::time(nullptr));
- // monoped->printOutBodyNamesInOrder();
- double t = 0.0;
- bool reverse = true;
+  monoped->printOutBodyNamesInOrder();
+  double t = 0.0;
+ 
 
 
   // lambda function for the controller
-  auto controller = [&monoped ,&generator, &distribution,&leg,&solution,&t,&reverse]()
+  auto controller = [&monoped ,&generator, &distribution,&leg,&t,&world]()
    {
     static size_t controlDecimation = 0;
 
     if (controlDecimation++ % 10000 == 0)
       {//std::cout<<"Reset"<<controlDecimation<<std::endl;
-      monoped->setGeneralizedCoordinate({0, 0, 0.5,
+      monoped->setGeneralizedCoordinate({0, 0, base_height_initial,
 
                                         1, 0, 0,0, 
 
@@ -277,9 +226,9 @@ towr_trajectory(formulation,solution,{0,0,0},{0,0,0});
     Eigen::VectorXd jointNominalConfig(monoped->getDOF()+1), jointVelocityTarget(monoped->getDOF());
     jointVelocityTarget.setZero();
     
-    jointNominalConfig << 0, 0, 0.5, 
+    jointNominalConfig << 0, 0, base_height_initial, 
                           1, 0, 0, 0, 
-                          0,0,0;
+                          0,1.09542,-2.3269;
 
 
    
@@ -288,22 +237,14 @@ towr_trajectory(formulation,solution,{0,0,0},{0,0,0});
        
         
 
-        Eigen::Vector3d Base(solution.base_linear_->GetPoint(t).p().transpose());
-        Eigen::Vector3d ee_grnd(solution.ee_motion_.at(0)->GetPoint(t).p().transpose()); //end effector wrt ground 
+        Eigen::Vector3d Base(0,0,base_height_initial);
+        Eigen::Vector3d ee_grnd=fn_modified_sine(t,0.9,100); //end effector wrt ground 
+        std::cout<<"ee_grnd:"<<ee_grnd<<std::endl;
         Eigen::Vector3d ee_H = grnd_ref_to_base_ref(ee_grnd,Base);//end effector wrt base
         Eigen::Vector3d q0 =leg.GetJointAngles(ee_H);
-        
 
-        if(t<2 && reverse)
-          t+=0.1;
-        
-        else 
-          {if(t>0 )
-          {t -=0.1;
-           reverse = false;}
-           else
-             reverse = true;}
-        std::cout<<"t:"<<t<<std::endl;
+       // monoped->setGeneralizedCoordinate({0,0,base_height_initial,1,0,0,0,q0[0],q0[1],q0[2]});
+         t+= world.getTimeStep();
 
         for (size_t k = 0; k < monoped->getGeneralizedCoordinateDim() ; k++)
         {
@@ -311,19 +252,34 @@ towr_trajectory(formulation,solution,{0,0,0},{0,0,0});
          //if(k<=2)
          //jointNominalConfig(k) = Base(k);
          if(k>=7)
-         jointNominalConfig(k) += q0(k-7);
+         jointNominalConfig(k) = q0(k-7);//distribution(generator);
 
          }
        
         //std::cout<<"jointNominalConfig"<<jointNominalConfig<<std::endl;
-        monoped->setPdTarget(jointNominalConfig, jointVelocityTarget);
-    
-   
-    
+       monoped->setPdTarget(jointNominalConfig, jointVelocityTarget);
 
-    
+      //print contact force details..
 
+        /*  auto footIndex = monoped->getBodyIdx("lowerleg");
 
+      /// for all contacts on the robot, check ...
+      for(auto& contact: monoped->getContacts())
+       {
+        if ( footIndex == contact.getlocalBodyIndex() ) {
+        //std::cout<<"Contact impulse in the contact frame: "<<contact.getImpulse()->e()<<std::endl;
+         // std::cout<<"Contact frame: \n"<<contact.getContactFrame().e()<<std::endl;
+          std::cout<<"Contact impulse in the world frame: "<<contact.getContactFrame().e() * contact.getImpulse()->e()<<std::endl;
+          std::cout<<"Contact Normal in the world frame: "<<contact.getNormal().e().transpose()<<std::endl;
+          std::cout<<"Contact position in the world frame: "<<contact.getPosition().e().transpose()<<std::endl;
+         // std::cout<<"It collides with: "<<world.getObject(contact.getPairObjectIndex().getName())<<std::endl;
+          std::cout<<std::endl<<std::endl;
+        }
+      }
+*/
+          std::cout<<"Generalized Force:"<<monoped->getGeneralizedForce()<<std::endl;
+
+      
 
   };
 

@@ -111,44 +111,44 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named towr_raisim
+# Target rules for targets named raisim_ik
 
 # Build rule for target.
-towr_raisim: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 towr_raisim
-.PHONY : towr_raisim
+raisim_ik: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 raisim_ik
+.PHONY : raisim_ik
 
 # fast build rule for target.
-towr_raisim/fast:
-	$(MAKE) -f CMakeFiles/towr_raisim.dir/build.make CMakeFiles/towr_raisim.dir/build
-.PHONY : towr_raisim/fast
+raisim_ik/fast:
+	$(MAKE) -f CMakeFiles/raisim_ik.dir/build.make CMakeFiles/raisim_ik.dir/build
+.PHONY : raisim_ik/fast
 
-monoped_towr_raisim_ik_2.o: monoped_towr_raisim_ik_2.cpp.o
+monoped_raisim_ik2.o: monoped_raisim_ik2.cpp.o
 
-.PHONY : monoped_towr_raisim_ik_2.o
+.PHONY : monoped_raisim_ik2.o
 
 # target to build an object file
-monoped_towr_raisim_ik_2.cpp.o:
-	$(MAKE) -f CMakeFiles/towr_raisim.dir/build.make CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik_2.cpp.o
-.PHONY : monoped_towr_raisim_ik_2.cpp.o
+monoped_raisim_ik2.cpp.o:
+	$(MAKE) -f CMakeFiles/raisim_ik.dir/build.make CMakeFiles/raisim_ik.dir/monoped_raisim_ik2.cpp.o
+.PHONY : monoped_raisim_ik2.cpp.o
 
-monoped_towr_raisim_ik_2.i: monoped_towr_raisim_ik_2.cpp.i
+monoped_raisim_ik2.i: monoped_raisim_ik2.cpp.i
 
-.PHONY : monoped_towr_raisim_ik_2.i
+.PHONY : monoped_raisim_ik2.i
 
 # target to preprocess a source file
-monoped_towr_raisim_ik_2.cpp.i:
-	$(MAKE) -f CMakeFiles/towr_raisim.dir/build.make CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik_2.cpp.i
-.PHONY : monoped_towr_raisim_ik_2.cpp.i
+monoped_raisim_ik2.cpp.i:
+	$(MAKE) -f CMakeFiles/raisim_ik.dir/build.make CMakeFiles/raisim_ik.dir/monoped_raisim_ik2.cpp.i
+.PHONY : monoped_raisim_ik2.cpp.i
 
-monoped_towr_raisim_ik_2.s: monoped_towr_raisim_ik_2.cpp.s
+monoped_raisim_ik2.s: monoped_raisim_ik2.cpp.s
 
-.PHONY : monoped_towr_raisim_ik_2.s
+.PHONY : monoped_raisim_ik2.s
 
 # target to generate assembly for a file
-monoped_towr_raisim_ik_2.cpp.s:
-	$(MAKE) -f CMakeFiles/towr_raisim.dir/build.make CMakeFiles/towr_raisim.dir/monoped_towr_raisim_ik_2.cpp.s
-.PHONY : monoped_towr_raisim_ik_2.cpp.s
+monoped_raisim_ik2.cpp.s:
+	$(MAKE) -f CMakeFiles/raisim_ik.dir/build.make CMakeFiles/raisim_ik.dir/monoped_raisim_ik2.cpp.s
+.PHONY : monoped_raisim_ik2.cpp.s
 
 # Help Target
 help:
@@ -157,11 +157,11 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... rebuild_cache"
-	@echo "... towr_raisim"
+	@echo "... raisim_ik"
 	@echo "... edit_cache"
-	@echo "... monoped_towr_raisim_ik_2.o"
-	@echo "... monoped_towr_raisim_ik_2.i"
-	@echo "... monoped_towr_raisim_ik_2.s"
+	@echo "... monoped_raisim_ik2.o"
+	@echo "... monoped_raisim_ik2.i"
+	@echo "... monoped_raisim_ik2.s"
 .PHONY : help
 
 
