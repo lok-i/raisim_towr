@@ -4,12 +4,12 @@
          <origin xyz ="0 0 0" rpy="0 0 0"/>
          <mass value="20"/>
          <inertia
-           ixx="0"
-           ixy="0"
-           ixz="0"
-           iyy="0.0"
-           iyz="0"
-           izz="0" />
+           ixx="1.2"
+           iyy="5.5"
+           izz="6.0"
+           ixy="0.0"
+           ixz="-0.2"
+           iyz="-0.01" />
                    
         </inertial>
 
