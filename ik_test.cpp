@@ -6,7 +6,7 @@
 #include <xpp_inv/cartesian_declarations.h>
 #include <Eigen/Dense>
 
-#define ON_RACK 1
+#define ON_RACK 1 //Means no physics, just movement like animation
 using Vector3d = Eigen::Vector3d;
 
 void setupCallback() {
@@ -36,13 +36,6 @@ void setupCallback() {
   vis->getCameraMan()->setTopSpeed(5);
 }
 
-void getJointAngles(Vector3d end_effector_pos, Vector3d &joint_pos , xpp::HyqlegInverseKinematics &leg)
-{
-  /*
-  Function takes in desired coordinates as x,y,z values and outputs the abduction, hip, knee angles.
-  */ 
-  joint_pos =leg.GetJointAngles(end_effector_pos);
-}
 int main(int argc, char **argv) 
 {
 
@@ -125,9 +118,8 @@ auto controller = [&monoped ,&leg, &world, &time_]()
   if(ON_RACK)
   {
     Vector3d end_effector_pos(amp*sin(time_*omega), 0., amp*cos(time_*omega) - 0.4);
-    Vector3d joint_pos(0.,0.,0.);
-    getJointAngles(end_effector_pos, joint_pos, leg);
-    monoped->setGeneralizedCoordinate( {0, 0, 2, 1,0,0,0, joint_pos[0],joint_pos[1],joint_pos[2] });
+    Vector3d joint_pos = leg.GetJointAngles(end_effector_pos);
+    monoped->setGeneralizedCoordinate({0, 0, 2, 1,0,0,0, joint_pos[0], joint_pos[1], joint_pos[2]});
   }
   else
   {
