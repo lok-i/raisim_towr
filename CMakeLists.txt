@@ -33,3 +33,5 @@ endfunction()
 
 #create_executable(raisim_ik monoped_raisim_ik.cpp)
 create_executable(towr_raisim monoped_towr_raisim_ik_2.cpp)
+create_executable(ik_test ik_test.cpp)
+
