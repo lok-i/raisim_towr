@@ -97,6 +97,26 @@ void inverse_kinematics_branch4(Eigen::Vector3d &thetas, Eigen::Vector3d &end_ef
    thetas[1] = atan2(-l1 + z - l3*sin(theta23), r - l3*cos(theta23));
    thetas[2] = theta23 - thetas[1];
 }
+void inverse_kinematics(Eigen::Vector3d &thetas, Eigen::Vector3d &end_effector_pos,  float l1, float l2, float l3, int branch)
+{
+    if(branch == 1)
+    {
+        inverse_kinematics_branch1(thetas, end_effector_pos, l1, l2, l3);
+    }
+    if(branch == 2)
+    {
+        inverse_kinematics_branch2(thetas, end_effector_pos, l1, l2, l3);
+    }
+    if(branch == 3)
+    {
+        inverse_kinematics_branch3(thetas, end_effector_pos, l1, l2, l3);
+    }
+    if(branch == 4)
+    {
+        inverse_kinematics_branch4(thetas, end_effector_pos, l1, l2, l3);
+    }
+}
+
 
 void jacobian(Eigen::Matrix<double, 3, 3> &jacob, Eigen::Vector3d &thetas, float l1, float l2, float l3)
 {
@@ -133,6 +153,7 @@ int main()
     float l3 = 1.;
     Eigen::Vector3d pos;
     Eigen::Vector3d thetas2;
+    //Testing inverse Kinematics
     forward_kinematics(pos, thetas, l1, l2 ,l3);
     std::cout<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<std::endl;
     inverse_kinematics_branch1(thetas, pos, l1, l2, l3);
@@ -147,11 +168,16 @@ int main()
     inverse_kinematics_branch4(thetas, pos, l1, l2, l3);
     forward_kinematics(pos, thetas, l1, l2 ,l3);
     std::cout<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<std::endl;
+    inverse_kinematics(thetas, pos, l1, l2, l3, 1);
+    forward_kinematics(pos, thetas, l1, l2 ,l3);
+    std::cout<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<std::endl;
     
+    //Testing Jacobian -- eqs are correct
     Eigen::Matrix<double, 3, 3> jacob;
     jacobian(jacob, thetas, l1, l2, l3);
     std::cout<<jacob<<std::endl;
 
+    //Testing Inverse Dynamics-- eqs are correct
     Eigen::Vector3d forces(1,1,1);
     Eigen::Vector3d torques;
     inverse_dynamics(torques, forces,thetas, l1, l2, l3);
