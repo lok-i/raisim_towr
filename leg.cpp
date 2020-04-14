@@ -2,8 +2,12 @@
 #include <iostream>
 #include <math.h>
 #define PI  3.141592
+//MONOPED LINK LENGTHS
+#define L1 0.08
+#define L2 0.35
+#define L3 0.33
 
-void forward_kinematics(Eigen::Vector3d &end_effector_pos, Eigen::Vector3d &thetas, float l1, float l2, float l3)
+void forward_kinematics(Eigen::Vector3d &end_effector_pos, Eigen::Vector3d &thetas, float l1 = L1, float l2 = L2, float l3 = L3)
 {
     /*
     Performs forward kinematics for a 3R spatial manipulator.
@@ -16,7 +20,7 @@ void forward_kinematics(Eigen::Vector3d &end_effector_pos, Eigen::Vector3d &thet
     end_effector_pos[2] = l1 + l2*sin(thetas[1]) + l3*sin(thetas[1] + thetas[2]);
 }
 
-void inverse_kinematics_branch1(Eigen::Vector3d &thetas, Eigen::Vector3d &end_effector_pos,  float l1, float l2, float l3)
+void inverse_kinematics_branch1(Eigen::Vector3d &thetas, Eigen::Vector3d &end_effector_pos,  float l1 = L1, float l2 = L2, float l3 = L3)
 {
     /*
     Performs inverse kinematics for a 3R spatial manipulator -- BRANCH1
@@ -37,7 +41,7 @@ void inverse_kinematics_branch1(Eigen::Vector3d &thetas, Eigen::Vector3d &end_ef
    thetas[2] = theta23 - thetas[1];
 }
 
-void inverse_kinematics_branch2(Eigen::Vector3d &thetas, Eigen::Vector3d &end_effector_pos,  float l1, float l2, float l3)
+void inverse_kinematics_branch2(Eigen::Vector3d &thetas, Eigen::Vector3d &end_effector_pos,  float l1 = L1, float l2 = L2, float l3 = L3)
 {
     /*
     Performs inverse kinematics for a 3R spatial manipulator -- BRANCH2
@@ -57,7 +61,7 @@ void inverse_kinematics_branch2(Eigen::Vector3d &thetas, Eigen::Vector3d &end_ef
    thetas[1] = atan2(-l1 + z - l3*sin(theta23), r - l3*cos(theta23));
    thetas[2] = theta23 - thetas[1];
 }
-void inverse_kinematics_branch3(Eigen::Vector3d &thetas, Eigen::Vector3d &end_effector_pos,  float l1, float l2, float l3)
+void inverse_kinematics_branch3(Eigen::Vector3d &thetas, Eigen::Vector3d &end_effector_pos,  float l1 = L1, float l2 = L2, float l3 = L3)
 {
     /*
     Performs inverse kinematics for a 3R spatial manipulator -- BRANCH3
@@ -77,7 +81,7 @@ void inverse_kinematics_branch3(Eigen::Vector3d &thetas, Eigen::Vector3d &end_ef
    thetas[1] = atan2(-l1 + z - l3*sin(theta23), r - l3*cos(theta23));
    thetas[2] = theta23 - thetas[1];
 }
-void inverse_kinematics_branch4(Eigen::Vector3d &thetas, Eigen::Vector3d &end_effector_pos,  float l1, float l2, float l3)
+void inverse_kinematics_branch4(Eigen::Vector3d &thetas, Eigen::Vector3d &end_effector_pos,  float l1 = L1, float l2 = L2, float l3 = L3)
 {
     /*
     Performs inverse kinematics for a 3R spatial manipulator -- BRANCH3
@@ -97,7 +101,7 @@ void inverse_kinematics_branch4(Eigen::Vector3d &thetas, Eigen::Vector3d &end_ef
    thetas[1] = atan2(-l1 + z - l3*sin(theta23), r - l3*cos(theta23));
    thetas[2] = theta23 - thetas[1];
 }
-void inverse_kinematics(Eigen::Vector3d &thetas, Eigen::Vector3d &end_effector_pos,  float l1, float l2, float l3, int branch)
+void inverse_kinematics(Eigen::Vector3d &thetas, Eigen::Vector3d &end_effector_pos, int branch,  float l1 = L1, float l2 = L2, float l3 = L3)
 {
     if(branch == 1)
     {
@@ -118,7 +122,7 @@ void inverse_kinematics(Eigen::Vector3d &thetas, Eigen::Vector3d &end_effector_p
 }
 
 
-void jacobian(Eigen::Matrix<double, 3, 3> &jacob, Eigen::Vector3d &thetas, float l1, float l2, float l3)
+void jacobian(Eigen::Matrix<double, 3, 3> &jacob, Eigen::Vector3d &thetas, float l1 = L1, float l2 = L2, float l3 = L3)
 {
     /*
     Finds Jacobian of the end effector given a certain configuration of the robot
@@ -131,7 +135,7 @@ void jacobian(Eigen::Matrix<double, 3, 3> &jacob, Eigen::Vector3d &thetas, float
    0,l2*cos(thetas[1]) + l3*cos(thetas[1] + thetas[2]),l3*cos(thetas[1] + thetas[2]);
 }
 
-void inverse_dynamics(Eigen::Vector3d &torques, Eigen::Vector3d &force, Eigen::Vector3d &thetas, float l1, float l2, float l3)
+void inverse_dynamics(Eigen::Vector3d &torques, Eigen::Vector3d &force, Eigen::Vector3d &thetas, float l1 = L1, float l2 = L2, float l3 = L3)
 {
     /*
     Finds Joint torques for desired force at end effector
@@ -154,33 +158,33 @@ int main()
     Eigen::Vector3d pos;
     Eigen::Vector3d thetas2;
     //Testing inverse Kinematics
-    forward_kinematics(pos, thetas, l1, l2 ,l3);
+    forward_kinematics(pos, thetas);
     std::cout<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<std::endl;
     inverse_kinematics_branch1(thetas, pos, l1, l2, l3);
-    forward_kinematics(pos, thetas, l1, l2 ,l3);
+    forward_kinematics(pos, thetas);
     std::cout<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<std::endl;
     inverse_kinematics_branch2(thetas, pos, l1, l2, l3);
-    forward_kinematics(pos, thetas, l1, l2 ,l3);
+    forward_kinematics(pos, thetas);
     std::cout<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<std::endl;
     inverse_kinematics_branch3(thetas, pos, l1, l2, l3);
-    forward_kinematics(pos, thetas, l1, l2 ,l3);
+    forward_kinematics(pos, thetas);
     std::cout<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<std::endl;
     inverse_kinematics_branch4(thetas, pos, l1, l2, l3);
-    forward_kinematics(pos, thetas, l1, l2 ,l3);
+    forward_kinematics(pos, thetas);
     std::cout<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<std::endl;
-    inverse_kinematics(thetas, pos, l1, l2, l3, 1);
-    forward_kinematics(pos, thetas, l1, l2 ,l3);
+    inverse_kinematics(thetas, pos, 1);
+    forward_kinematics(pos, thetas);
     std::cout<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<std::endl;
     
     //Testing Jacobian -- eqs are correct
     Eigen::Matrix<double, 3, 3> jacob;
-    jacobian(jacob, thetas, l1, l2, l3);
+    jacobian(jacob, thetas);
     std::cout<<jacob<<std::endl;
 
     //Testing Inverse Dynamics-- eqs are correct
     Eigen::Vector3d forces(1,1,1);
     Eigen::Vector3d torques;
-    inverse_dynamics(torques, forces,thetas, l1, l2, l3);
+    inverse_dynamics(torques, forces,thetas);
     std::cout<<"torques: "<<torques<<std::endl;
     return 0;
 }
