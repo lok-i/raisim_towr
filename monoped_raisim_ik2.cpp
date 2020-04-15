@@ -36,6 +36,10 @@
 #include <towr/nlp_formulation.h>
 #include <ifopt/ipopt_solver.h>
 #include <typeinfo>
+
+
+
+
 using namespace towr;
 #define base_height_initial 1
 
@@ -190,7 +194,7 @@ if (actuators_only)
       }}}
 
 
-  monoped->setGeneralizedForce(Eigen::VectorXd::Zero(monoped->getDOF()));
+  //monoped->setGeneralizedForce(Eigen::VectorXd::Zero(monoped->getDOF()));
   monoped->setControlMode(raisim::ControlMode::PD_PLUS_FEEDFORWARD_TORQUE);
   monoped->setPdGains(jointPgain, jointDgain);
   monoped->setName("monoped");
@@ -276,8 +280,31 @@ if (actuators_only)
           std::cout<<std::endl<<std::endl;
         }
       }
-*/
+*/        std::cout<<std::endl;
+       // for(auto& bodyName: monoped->getBodyNames())
+       // {
+         
+        
+       // }
+          
+
+
+
+
+            raisim::SparseJacobian sparseJaco;
+            raisim::Vec<3> point_W = {0,0,0};
+            auto bodyIndex = monoped->getBodyIdx("lowerleg");
+
+
+
+           monoped->getSparseJacobian(bodyIndex,point_W,sparseJaco);
+  
+          std::cout<<bodyName<<":";
+          std::cout<<"Sparse_Jacobian:"<<std::endl;
+          std::cout<< sparseJaco.v<<"\t";
+          std::cout<<std::endl;
           std::cout<<"Generalized Force:"<<monoped->getGeneralizedForce()<<std::endl;
+          std::cout<<"Generalized Feedforward Force:"<<monoped->getFeedForwardGeneralizedForce()<<std::endl;
 
       
 
