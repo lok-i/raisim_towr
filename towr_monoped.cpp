@@ -132,6 +132,6 @@ int main()
 
     cout << endl;
 
-    t += 0.02;
+    t += 0.2;
   }
 }

@@ -41,9 +41,9 @@
 
 
 using namespace towr;
-#define base_height_initial 1
+#define base_height_initial 0.91
 
-#define gravity false
+#define gravity true
 #define actuators_only false
 #define PD_tuning_mode false
 
@@ -238,15 +238,21 @@ if (actuators_only)
    
 
 
-       
-        
+
 
         Eigen::Vector3d Base(0,0,base_height_initial);
-        Eigen::Vector3d ee_grnd=fn_modified_sine(t,0.9,100); //end effector wrt ground 
+        Eigen::Vector3d ee_grnd;//={0.2,0.2,0.2};//fn_modified_sine(t,0.9,100); //end effector wrt ground 
+        
+
+        std::cout<<"co_ordianates"<<"\t";
+        for (int j =0;j<3;j++)
+        std::cin>>ee_grnd(j);
+
         std::cout<<"ee_grnd:"<<ee_grnd<<std::endl;
         Eigen::Vector3d ee_H = grnd_ref_to_base_ref(ee_grnd,Base);//end effector wrt base
+        std::cout<<"ee_H:"<<ee_H<<std::endl;
         Eigen::Vector3d q0 =leg.GetJointAngles(ee_H);
-
+        std::cout<<"q0:\n"<<q0<<std::endl;
        // monoped->setGeneralizedCoordinate({0,0,base_height_initial,1,0,0,0,q0[0],q0[1],q0[2]});
          t+= world.getTimeStep();
 
@@ -291,18 +297,19 @@ if (actuators_only)
 
 
 
-            raisim::SparseJacobian sparseJaco;
-            raisim::Vec<3> point_W = {0,0,0};
-            auto bodyIndex = monoped->getBodyIdx("lowerleg");
+          raisim::SparseJacobian sparseJaco;
+          raisim::Vec<3> point_W = {0,0,0};
+          auto bodyIndex = monoped->getBodyIdx("lowerleg");
 
 
 
-           monoped->getSparseJacobian(bodyIndex,point_W,sparseJaco);
+          monoped->getSparseJacobian(bodyIndex,point_W,sparseJaco);
   
-          std::cout<<bodyName<<":";
+          //std::cout<<bodyName<<":";
           std::cout<<"Sparse_Jacobian:"<<std::endl;
           std::cout<< sparseJaco.v<<"\t";
           std::cout<<std::endl;
+          std::cout<<"Generalized Velocity:"<<monoped->getGeneralizedVelocity()<<std::endl;
           std::cout<<"Generalized Force:"<<monoped->getGeneralizedForce()<<std::endl;
           std::cout<<"Generalized Feedforward Force:"<<monoped->getFeedForwardGeneralizedForce()<<std::endl;
 

@@ -39,7 +39,7 @@
 #define base_height_initial 0.53
 #define gravity true
 #define actuators_only true
-#define PD_tuning_mode false
+#define PD_tuning_mode true
 
 using namespace towr;
 
@@ -202,7 +202,7 @@ towr_trajectory(formulation,solution,Target_ee);
   raisim::World world;
   
   if(!gravity)
-   world.setGravity({0,0,0}); // by default gravity is set to {0,0,g}
+  world.setGravity({0,0,0}); // by default gravity is set to {0,0,g}
   world.setTimeStep(0.0025);
 
   auto vis = raisim::OgreVis::get();
@@ -313,7 +313,7 @@ towr_trajectory(formulation,solution,Target_ee);
                                         1, 0, 0,0, 
 
                                          0,1.09542,-2.3269});
-      }
+    }
 
     if (controlDecimation % 50 != 0)
     {//std::cout<<"halt"<<controlDecimation<<std::endl;
