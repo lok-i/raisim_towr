@@ -60,39 +60,39 @@ CMAKE_SOURCE_DIR = /home/lok/RBCCPS_projects/raisim_towr
 CMAKE_BINARY_DIR = /home/lok/RBCCPS_projects/raisim_towr/build
 
 #=============================================================================
-# Target rules for target CMakeFiles/towr_raisim.dir
+# Target rules for target CMakeFiles/force_tracker.dir
 
 # All Build rule for target.
-CMakeFiles/towr_raisim.dir/all:
-	$(MAKE) -f CMakeFiles/towr_raisim.dir/build.make CMakeFiles/towr_raisim.dir/depend
-	$(MAKE) -f CMakeFiles/towr_raisim.dir/build.make CMakeFiles/towr_raisim.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/lok/RBCCPS_projects/raisim_towr/build/CMakeFiles --progress-num=1,2 "Built target towr_raisim"
-.PHONY : CMakeFiles/towr_raisim.dir/all
+CMakeFiles/force_tracker.dir/all:
+	$(MAKE) -f CMakeFiles/force_tracker.dir/build.make CMakeFiles/force_tracker.dir/depend
+	$(MAKE) -f CMakeFiles/force_tracker.dir/build.make CMakeFiles/force_tracker.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/lok/RBCCPS_projects/raisim_towr/build/CMakeFiles --progress-num=1,2 "Built target force_tracker"
+.PHONY : CMakeFiles/force_tracker.dir/all
 
 # Include target in all.
-all: CMakeFiles/towr_raisim.dir/all
+all: CMakeFiles/force_tracker.dir/all
 
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/towr_raisim.dir/rule: cmake_check_build_system
+CMakeFiles/force_tracker.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/lok/RBCCPS_projects/raisim_towr/build/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/towr_raisim.dir/all
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/force_tracker.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/lok/RBCCPS_projects/raisim_towr/build/CMakeFiles 0
-.PHONY : CMakeFiles/towr_raisim.dir/rule
+.PHONY : CMakeFiles/force_tracker.dir/rule
 
 # Convenience name for target.
-towr_raisim: CMakeFiles/towr_raisim.dir/rule
+force_tracker: CMakeFiles/force_tracker.dir/rule
 
-.PHONY : towr_raisim
-
-# clean rule for target.
-CMakeFiles/towr_raisim.dir/clean:
-	$(MAKE) -f CMakeFiles/towr_raisim.dir/build.make CMakeFiles/towr_raisim.dir/clean
-.PHONY : CMakeFiles/towr_raisim.dir/clean
+.PHONY : force_tracker
 
 # clean rule for target.
-clean: CMakeFiles/towr_raisim.dir/clean
+CMakeFiles/force_tracker.dir/clean:
+	$(MAKE) -f CMakeFiles/force_tracker.dir/build.make CMakeFiles/force_tracker.dir/clean
+.PHONY : CMakeFiles/force_tracker.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/force_tracker.dir/clean
 
 .PHONY : clean
 

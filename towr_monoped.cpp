@@ -58,7 +58,7 @@ int main()
   formulation.initial_ee_W_.push_back(Eigen::Vector3d::Zero());
 
   // define the desired goal state of the hopper
-  formulation.final_base_.lin.at(towr::kPos) << 5.0, 0.0, 0.5;
+  formulation.final_base_.lin.at(towr::kPos) << 50.0, 50.0, 50.0;
 
   // Parameters that define the motion. See c'tor for default values or
   // other values that can be modified.

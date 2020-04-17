@@ -1,6 +1,8 @@
-#include <raisim/OgreVis.hpp>
 //need to update the grnd_to_base function
 
+
+
+#include <raisim/OgreVis.hpp>
 #include "raisimBasicImguiPanel.hpp"
 #include "raisimKeyboardCallback.hpp"
 #include "helper.hpp"
@@ -15,8 +17,8 @@
 #include <leg.cpp>
 
 #define base_height_initial 0.5
-#define gravity false
-#define actuators_only false
+#define gravity true
+#define actuators_only true
 #define PD_tuning_mode false
 #define towr_initial_output false
 
@@ -173,41 +175,152 @@ return(sqrt(pow(x(0),2)+pow(x(1),2)+pow(x(2),2)));
 /*function to calcute the force exerted
   in the tip using Jacobian and genralized
   force(tau)*/
-Eigen::Vector3d calc_force_tip(auto& monoped,Eigen::Vector3d q0)
+Eigen::Vector3d calc_force_tip(Eigen::Vector3d tau,Eigen::Vector3d q0)
 {
-  raisim::VecDyn tou_9(monoped->getGeneralizedForce());
-    //tou_9.setZero();
-   // std::cout<<"Generalized Force:"<<std::endl<<tou_9;
+  
     
     Eigen::Matrix<double, 3, 3> jacob;
-    jacobian_2(jacob, q0);
-   // std::cout<<std::endl<<"Jacobian_wrt_leg_frame:"<<std::endl;
-    //std::cout<<jacob<<std::endl;
+    jacobian_2(jacob, q0);//Jacobian wrt to local leg frame
+  
     
     
-    Eigen::Matrix<double,3,3> Rot_legframe_to_baseframe;
-    Rot_legframe_to_baseframe << 0, 0,-1,
+    Eigen::Matrix<double,3,3> Rot_legframe_to_hipframe;
+    Rot_legframe_to_hipframe << 0, 0,-1,
                                  0,-1, 0,
                                 -1, 0, 0;
-    
-    Eigen::Matrix<double, 3, 3> jacob_inv = (Rot_legframe_to_baseframe*jacob).inverse();
+    //Jh = Rhl*Jl
+    Eigen::Matrix<double, 3, 3> jacob_inv = (Rot_legframe_to_hipframe*jacob).inverse();
 
-    Eigen::Vector3d tou;//0.2,0.2,-0.6
-    for(int k=0;k<3;k++)
-    {
-      tou(k) = tou_9.v[6+k];
 
-    }
-    //std::cout<<std::endl<<"tou"<<std::endl<<tou;
 
-    std::cout<<std::endl<<"Ftip = ((R*J)^-1)^T * tau"<<std::endl<<jacob_inv.transpose()*tou<<"\n\n"; 
+    std::cout<<std::endl<<"Ftip = ((R*J)^-1)^T * tau"<<std::endl<<jacob_inv.transpose()*tau<<"\n\n"; 
    
-   return(Eigen::Vector3d(jacob_inv.transpose()*tou));
+   return(Eigen::Vector3d(jacob_inv.transpose()*tau));
 
 }
 
+/*
+f_trip should be wrt to the hip frame
+*/
+Eigen::Vector3d calc_tau_(Eigen::Vector3d f_tip,Eigen::Vector3d q0)
+{
+  
+     
+    Eigen::Matrix<double, 3, 3> jacob;
+    jacobian_2(jacob, q0);//Jacobian wrt to local leg frame
+    
+    
+    Eigen::Matrix<double,3,3> Rot_legframe_to_hipframe;
+    Rot_legframe_to_hipframe << 0, 0,-1,
+                                 0,-1, 0,
+                                -1, 0, 0;
+    //Jh = Rhl*Jl
+    Eigen::Matrix<double, 3, 3> jacob_rot = Rot_legframe_to_hipframe*jacob;
+
+ 
+    
+    Eigen::Vector3d tau;
+    tau = jacob_rot.transpose() * f_tip ;
+     
+   std::cout<<std::endl<<"tau = (R*J)^T * Ftip"<<std::endl<<tau<<"\n\n"; 
+   
+    return(tau);
+
+}
+/*
+R = Rz(2)Ry(1)Rx(0)
+=
+
+
+cos 1 cos 2  //00
+
+sin 0 sin 1 cos 2 − cos 0 sin 2 //01
+
+cos 0 sin 1 cos 2 + sin 0 sin 2 //02
+
+cos 1 sin 2 //10
+
+sin 0 sin 1 sin 2 + cos 0 cos 2 //11
+
+cos 0 sin 1 sin 2 − sin 0 cos 2 //12
+− sin 1 //20
+sin 0 cos 1 //21
+cos 0 cos 1 //22
+
+
+*/
+
+Eigen::Vector3d Transform_Vector_to_hip_frame_frm_grnd(Eigen::Vector3d base_co,Eigen::Vector3d b_a,Eigen::Vector3d v_g)
+{
+
+ Eigen::Matrix<double,4,4> Transform;
+//rotation part
+ Transform(0,0) = cos(b_a[1])*cos(b_a[2]);
+
+ Transform(0,1) = sin(b_a[0])*sin(b_a[1])*cos(b_a[2]) - cos(b_a[0])*sin(b_a[2]);
+ 
+ Transform(0,2) = cos(b_a[0])*sin(b_a[1])*cos(b_a[2]) + sin(b_a[0])*sin(b_a[2]);
+
+ 
+ Transform(1,0) = cos(b_a[1])*sin(b_a[2]);
+
+ Transform(1,1) = sin(b_a[0])*sin(b_a[1])*sin(b_a[2]) + cos(b_a[0])*cos(b_a[2]);
+
+ Transform(1,2) = cos(b_a[0])*sin(b_a[1])*sin(b_a[2]) - sin(b_a[0])*cos(b_a[2]);
+
+ 
+ Transform(2,0) = -1*sin(b_a[1]);
+
+ Transform(2,1) = sin(b_a[0])*cos(b_a[1]);
+
+ Transform(2,2) = cos(b_a[0])*cos(b_a[1]);
 
 
+//linear distance from gound origin
+ Transform(0,3) = base_co[0];
+ Transform(1,3) = base_co[1];
+ Transform(2,3) = base_co[2];
+// last dummy row 
+ for (int i =0 ;i <4;i++)
+ {
+if(i==3)
+Transform(3,i) = 1;
+else
+Transform(3,i) = 0;
+
+ }
+
+//Tgb is ready need to convert to Tgh
+//need to consider an offset along the z axis of the new frame (base to hip)
+Eigen::VectorXd Hip_wrt_g(4);
+Eigen::VectorXd Hip_in_base(4);
+Hip_in_base << 0, 0, -0.15, 1;
+Hip_wrt_g = Transform*Hip_in_base;
+ 
+ for (int i =0 ;i <4;i++)
+ {
+
+  Transform(i,3) = Hip_wrt_g(i);
+
+ }
+
+ /////Tgh is ready..but we need Thg = Tgh^-1
+Eigen::Matrix<double,4,4> Transform_inv = Transform.inverse();
+//vec3 to vec4 for homogeneous co ordinate system
+Eigen::VectorXd Input(4),Output(4);
+
+ for (int i =0 ;i <4;i++)
+ 	if(i==3)
+		Input(i)= 1;
+	else
+		Input(i) = v_g(i);
+
+Output = Transform_inv*Input ;
+
+return(Eigen::Vector3d(Output[0],Output[1],Output[2])); 
+
+
+}
 
 
 int main(int argc, char **argv) 
@@ -266,7 +379,7 @@ int main(int argc, char **argv)
   vis->setDesiredFPS(25);
 
   //simulation is automatically stepped, if is false
-  raisim::gui::manualStepping = true; 
+  raisim::gui::manualStepping = false; 
   //raisim::gui::Collisionbodies = true; 
   /// starts visualizer thread
   vis->initApp();
@@ -375,17 +488,49 @@ int main(int argc, char **argv)
 
    
 
-
+    if(t<2)
+        {
+          
        
         //inverse kinematics calculations along the spline
         xpp::HyqlegInverseKinematics leg;
-        Eigen::Vector3d Base(solution.base_linear_->GetPoint(t).p().transpose());
+        Eigen::Vector3d Base_co(solution.base_linear_->GetPoint(t).p().transpose());
+        
+        //Base orientaton angles       
+        Eigen::Vector3d Base_a(solution.base_angular_->GetPoint(t).p());
+        Base_a = Base_a/M_PI*180;
+
+
         Eigen::Vector3d ee_grnd(solution.ee_motion_.at(0)->GetPoint(t).p().transpose()); //end effector wrt ground 
-        Eigen::Vector3d ee_H = grnd_ref_to_base_ref(ee_grnd,Base);//end effector wrt base
-        Eigen::Vector3d q0 =leg.GetJointAngles(ee_H);
+
+        Eigen::Vector3d Force_towr(solution.ee_force_.at(0)->GetPoint(t).p().transpose());
+
+
+
+        Eigen::Vector3d ee_H = Transform_Vector_to_hip_frame_frm_grnd(Base_co,Base_a,ee_grnd);
+        Eigen::Vector3d q0   = leg.GetJointAngles(ee_H);
+        
+        
+        //sets force according to towr
+        Eigen::VectorXd tau_9(9);
         
 
-      
+        Eigen::Vector3d tau_3_temp = calc_tau_(Transform_Vector_to_hip_frame_frm_grnd(Base_co,Base_a,Force_towr),q0);
+        
+        for(int i=0;i<9;i++)
+        {
+
+          if(i>=6)
+            tau_9(i)=tau_3_temp(i-6);
+          else
+            tau_9(i)=0;
+        }
+
+        //genarlized feed forward force
+        monoped->setGeneralizedForce(tau_9);
+
+        std::cout<<"\n"<<"Generalized Force:"<<monoped->getGeneralizedForce();
+        std::cout<<"\n"<<"Generalized FF Force:"<<monoped->getFeedForwardGeneralizedForce()<<"\n";
         for (size_t k = 0; k < monoped->getGeneralizedCoordinateDim() ; k++)
         {
          
@@ -395,7 +540,7 @@ int main(int argc, char **argv)
 
          }
        
-        //updates angles
+         //updates angles
         monoped->setPdTarget(jointNominalConfig, jointVelocityTarget);
     
       //code to repeat the cycle from t=0 to t=2 and reverse alternatively 
@@ -409,28 +554,23 @@ int main(int argc, char **argv)
            else
              reverse = true;}
 */
-        if(t<2)
-        {
-          
+       
           
           std::cout<<std::endl<<"t:"<<t<<std::endl;
           std::cout<<std::endl<<"Contact force of ee @ time t(towr):"<<std::endl;
-          Eigen::Vector3d Force_towr(solution.ee_force_.at(0)->GetPoint(t).p().transpose());
+         
           std::cout<<Force_towr<<std::endl;
 
           //data collection for plots
           time.push_back(t);
           F_towr.push_back(mag_vector(Force_towr));
-          F_raisim.push_back(mag_vector(calc_force_tip(monoped,q0)));
+          F_raisim.push_back(mag_vector(calc_force_tip(tau_3_temp,q0)));
           t+=0.01;
           }
 
   };
   
-
-
-
-  vis->setControlCallback(controller);
+ vis->setControlCallback(controller);
 
   /// set camera
   vis->select(groundVis->at(0));
@@ -450,7 +590,7 @@ int main(int argc, char **argv)
   plt::plot(time, F_towr,{{"label", "towr"}});
   plt::plot(time,F_raisim,{{"label", "raisim"}});
   std::string filename = VectortoString(Target_base);
-  std::string plot_path = "../Plots/force_traced:Target:("+filename+").png";
+  std::string plot_path = "../Plots/force_input_frm_towr->raisim:Target:("+filename+").png";
   std::cout << "Saving result to " << plot_path << std::endl;;
   plt::save(plot_path);
 

@@ -111,44 +111,44 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named towr_raisim
+# Target rules for targets named force_tracker
 
 # Build rule for target.
-towr_raisim: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 towr_raisim
-.PHONY : towr_raisim
+force_tracker: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 force_tracker
+.PHONY : force_tracker
 
 # fast build rule for target.
-towr_raisim/fast:
-	$(MAKE) -f CMakeFiles/towr_raisim.dir/build.make CMakeFiles/towr_raisim.dir/build
-.PHONY : towr_raisim/fast
+force_tracker/fast:
+	$(MAKE) -f CMakeFiles/force_tracker.dir/build.make CMakeFiles/force_tracker.dir/build
+.PHONY : force_tracker/fast
 
-monoped_towr_raisim_plot.o: monoped_towr_raisim_plot.cpp.o
+monoped_towr_force_tracker.o: monoped_towr_force_tracker.cpp.o
 
-.PHONY : monoped_towr_raisim_plot.o
+.PHONY : monoped_towr_force_tracker.o
 
 # target to build an object file
-monoped_towr_raisim_plot.cpp.o:
-	$(MAKE) -f CMakeFiles/towr_raisim.dir/build.make CMakeFiles/towr_raisim.dir/monoped_towr_raisim_plot.cpp.o
-.PHONY : monoped_towr_raisim_plot.cpp.o
+monoped_towr_force_tracker.cpp.o:
+	$(MAKE) -f CMakeFiles/force_tracker.dir/build.make CMakeFiles/force_tracker.dir/monoped_towr_force_tracker.cpp.o
+.PHONY : monoped_towr_force_tracker.cpp.o
 
-monoped_towr_raisim_plot.i: monoped_towr_raisim_plot.cpp.i
+monoped_towr_force_tracker.i: monoped_towr_force_tracker.cpp.i
 
-.PHONY : monoped_towr_raisim_plot.i
+.PHONY : monoped_towr_force_tracker.i
 
 # target to preprocess a source file
-monoped_towr_raisim_plot.cpp.i:
-	$(MAKE) -f CMakeFiles/towr_raisim.dir/build.make CMakeFiles/towr_raisim.dir/monoped_towr_raisim_plot.cpp.i
-.PHONY : monoped_towr_raisim_plot.cpp.i
+monoped_towr_force_tracker.cpp.i:
+	$(MAKE) -f CMakeFiles/force_tracker.dir/build.make CMakeFiles/force_tracker.dir/monoped_towr_force_tracker.cpp.i
+.PHONY : monoped_towr_force_tracker.cpp.i
 
-monoped_towr_raisim_plot.s: monoped_towr_raisim_plot.cpp.s
+monoped_towr_force_tracker.s: monoped_towr_force_tracker.cpp.s
 
-.PHONY : monoped_towr_raisim_plot.s
+.PHONY : monoped_towr_force_tracker.s
 
 # target to generate assembly for a file
-monoped_towr_raisim_plot.cpp.s:
-	$(MAKE) -f CMakeFiles/towr_raisim.dir/build.make CMakeFiles/towr_raisim.dir/monoped_towr_raisim_plot.cpp.s
-.PHONY : monoped_towr_raisim_plot.cpp.s
+monoped_towr_force_tracker.cpp.s:
+	$(MAKE) -f CMakeFiles/force_tracker.dir/build.make CMakeFiles/force_tracker.dir/monoped_towr_force_tracker.cpp.s
+.PHONY : monoped_towr_force_tracker.cpp.s
 
 # Help Target
 help:
@@ -157,11 +157,11 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... rebuild_cache"
-	@echo "... towr_raisim"
+	@echo "... force_tracker"
 	@echo "... edit_cache"
-	@echo "... monoped_towr_raisim_plot.o"
-	@echo "... monoped_towr_raisim_plot.i"
-	@echo "... monoped_towr_raisim_plot.s"
+	@echo "... monoped_towr_force_tracker.o"
+	@echo "... monoped_towr_force_tracker.i"
+	@echo "... monoped_towr_force_tracker.s"
 .PHONY : help
 
 
