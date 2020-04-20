@@ -73,6 +73,8 @@ xpp_inv/cartesian_declarations.h
 /home/lok/RBCCPS_projects/raisim_towr/monoped_towr_force_tracker.cpp
 raisim/OgreVis.hpp
 -
+raisim/contact/Contact.hpp
+-
 raisimBasicImguiPanel.hpp
 /home/lok/RBCCPS_projects/raisim_towr/raisimBasicImguiPanel.hpp
 raisimKeyboardCallback.hpp

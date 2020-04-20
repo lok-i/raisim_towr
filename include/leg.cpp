@@ -202,6 +202,24 @@ void inverse_dynamics(Eigen::Vector3d &torques, Eigen::Vector3d &force, Eigen::V
     jacobian(jacob, thetas, l1, l2, l3);
     torques = jacob.transpose()*force; 
 }  
+
+
+void chk_forward_k(Eigen::Vector3d q0 )
+{
+Eigen::Vector3d EE_co_l;
+forward_kinematics_2(EE_co_l,q0);
+std::cout<<std::endl<<"\nEE_co_predicted by fk in leg frame:\n"<<EE_co_l;
+Eigen::Matrix<double,3,3> Rot_hl;
+                  Rot_hl << 0, 0,-1,
+                            0,-1, 0,
+                           -1, 0, 0;
+std::cout<<std::endl<<"\nEE_co_predicted by fk in hip frame:\n"<<Rot_hl*EE_co_l;
+
+
+}
+
+
+
 /*
 int main()
 {
