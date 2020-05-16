@@ -108,14 +108,14 @@ void InitGraphics()
 
 }
 
-void getJointAngles(raisim::ArticulatedSystem *monoped, std::vector<double> &jointAngles)
-{
-    // The order of the angles is abduction, hip, joint
-    auto temp = monoped->getGeneralizedCoordinate();
-    jointAngles[0]=temp[7];
-    jointAngles[1]=temp[8];
-    jointAngles[2]=temp[9];
-}
+// void getJointAngles(raisim::ArticulatedSystem *monoped, std::vector<float,3> &jointAngles)
+// {
+//     // The order of the angles is abduction, hip, joint
+//     auto temp = monoped->getGeneralizedCoordinate();
+//     jointAngles[0]=temp[7];
+//     jointAngles[1]=temp[8];
+//     jointAngles[2]=temp[9];
+// }
 
 
 int main(int argc, char **argv) 
@@ -131,33 +131,34 @@ int main(int argc, char **argv)
     raisim::Vec<3> des_vel;
     des_vel[0] = 0.0;
     des_vel[2] = 0.0;
-    auto controller = [&monoped ,&leg, &world, &time_, &des_vel, &Kvf]()
-    {
-        //RAIBERTS CONTROLLER -- SIMPLEST FORM
-        auto contacts = monoped->getContacts();
-        float Ts = 0.0;
-        raisim::Vec<3> vel;
-        raisim::Vec<3> pos;
-        std::vector<float> currentJointAngles;
-        monoped->getVelocity(3, vel);
+    // auto controller = [&monoped ,&leg, &world, &time_, &des_vel, &Kvf]()
+    // {
+    //     //RAIBERTS CONTROLLER -- SIMPLEST FORM
+    //     auto contacts = monoped->getContacts();
+    //     float Ts = 0.0;
+    //     raisim::Vec<3> vel;
+    //     raisim::Vec<3> pos;
+    //     std::vector<float, 3> currentJointAngles;
+    //     monoped->getVelocity(3, vel);
 
-        if(contacts.size() == 0)
-        {
-            pos[0] = vel[0]*(Ts/2) + Kvf*(des_vel[0] - vel[0]);
-            pos[2] = vel[2]*(Ts/2) + Kvf*(des_vel[2] - vel[2]); 
+    //     if(contacts.size() == 0)
+    //     {
+    //         pos[0] = vel[0]*(Ts/2) + Kvf*(des_vel[0] - vel[0]);
+    //         pos[2] = vel[2]*(Ts/2) + Kvf*(des_vel[2] - vel[2]); 
+            
 
-        }
-        if(contacts.size() == 1)
-        {
-            //IT is in stance mode, which has thrust and servo phase
-            //First let us try to approximate a spring
+    //     }
+    //     if(contacts.size() == 1)
+    //     {
+    //         //IT is in stance mode, which has thrust and servo phase
+    //         //First let us try to approximate a spring
 
 
-        }
-        time_ += world.getTimeStep();
-    };
+    //     }
+    //     time_ += world.getTimeStep();
+    // };
 
-    vis->setControlCallback(controller);
+    // vis->setControlCallback(controller);
 
     /// set camera
     vis->select(groundVis->at(0));

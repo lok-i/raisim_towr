@@ -134,6 +134,28 @@
 	    </visual>        
     </link>
     
+    <link name="foot">
+	    
+        <inertial>
+            <origin xyz ="0.4 0 0" rpy="0 0 0"/>
+            <mass value="0.01"/>
+        </inertial>
+      <collision>
+            <origin xyz="0.35 0 0" rpy="0 0 0"/>
+            <geometry>
+                <sphere radius="0.03"/>
+            </geometry>
+        </collision>
+
+        <visual>
+          <origin xyz="0.35 0 0" rpy="0 0 0"/>
+	      <geometry>
+	        <sphere radius="0.03"/>
+	      </geometry>
+	      <material name="blue"/>
+	    </visual>        
+    </link>
+
     <joint name="haa_joint" type="revolute">
         <origin xyz="0.0 0.0 -0.15000" rpy="2.0344439357957036 1.5707962290814481 -1.1071487177940917"/>
         <parent link="base"/>
@@ -154,6 +176,11 @@
         <child  link="lowerleg"/>
         <limit effort="200" lower="-1.6" upper="1.6" velocity="1.0"/>
         <axis xyz="0 0 1"/>
+    </joint>
+    <joint name="fl_joint" type="fixed">
+        <origin xyz="0.000 0.00000 0.00000" rpy="0.0 0.0 0.0"/>
+        <parent link="lowerleg"/>
+        <child  link="foot"/>
     </joint>
 </robot>
 
