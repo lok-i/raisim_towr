@@ -7,6 +7,7 @@
 #include <Eigen/Dense>
 #include <iostream>
 #include <vector>
+#include "leg.cpp"
 #define ON_RACK 1 //Means no physics, just movement like animation
 using Vector3d = Eigen::Vector3d;
 
@@ -72,12 +73,12 @@ void InitWorld()
   monoped->setControlMode(raisim::ControlMode::PD_PLUS_FEEDFORWARD_TORQUE);
   monoped->setPdGains(jointPgain, jointDgain);
   monoped->setName("monoped");
-  monoped->printOutBodyNamesInOrder();
-  std::vector<std::string> names = monoped->getMovableJointNames();
-  for(auto x: names)
-  {
-    std::cout<<x<<std::endl;
-  }
+  // monoped->printOutBodyNamesInOrder();
+  // std::vector<std::string> names = monoped->getMovableJointNames();
+  // for(auto x: names)
+  // {
+  //   std::cout<<x<<std::endl;
+  // }
 
 }
 
@@ -126,45 +127,19 @@ int main(int argc, char **argv)
     InitGraphics();
     
     // lambda function for the controller
-    double time_ = 0.;
-    float Kvf = 1.0;
-    raisim::Vec<3> des_vel;
-    des_vel[0] = 0.0;
-    des_vel[2] = 0.0;
-    // auto controller = [&monoped ,&leg, &world, &time_, &des_vel, &Kvf]()
-    // {
-    //     //RAIBERTS CONTROLLER -- SIMPLEST FORM
-    //     auto contacts = monoped->getContacts();
-    //     float Ts = 0.0;
-    //     raisim::Vec<3> vel;
-    //     raisim::Vec<3> pos;
-    //     std::vector<float, 3> currentJointAngles;
-    //     monoped->getVelocity(3, vel);
-
-    //     if(contacts.size() == 0)
-    //     {
-    //         pos[0] = vel[0]*(Ts/2) + Kvf*(des_vel[0] - vel[0]);
-    //         pos[2] = vel[2]*(Ts/2) + Kvf*(des_vel[2] - vel[2]); 
-            
-
-    //     }
-    //     if(contacts.size() == 1)
-    //     {
-    //         //IT is in stance mode, which has thrust and servo phase
-    //         //First let us try to approximate a spring
-
-
-    //     }
-    //     time_ += world.getTimeStep();
-    // };
-
-    // vis->setControlCallback(controller);
+    
 
     /// set camera
     vis->select(groundVis->at(0));
     vis->getCameraMan()->setYawPitchDist(Ogre::Radian(0), -Ogre::Radian(M_PI_4), 2);
 
     /// run the app
+    auto controller = [&monoped]() 
+    {
+      
+    };
+
+  vis->setControlCallback(controller);
 
     vis->run();
 

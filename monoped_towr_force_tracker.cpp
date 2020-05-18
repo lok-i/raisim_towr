@@ -447,7 +447,7 @@ int main(int argc, char **argv)
       }}}
 
   monoped->setGeneralizedForce(Eigen::VectorXd::Zero(monoped->getDOF()));
-  monoped->setControlMode(raisim::ControlMode::PD_PLUS_FEEDFORWARD_TORQUE);
+  monoped->setControlMode(raisim::ControlMode::FORCE_AND_TORQUE);
   monoped->setPdGains(jointPgain, jointDgain);
   monoped->setName("monoped");
   //monoped->printOutBodyNamesInOrder();
@@ -479,15 +479,6 @@ int main(int argc, char **argv)
     
 
     /// monoped joint PD controller
-    Eigen::VectorXd jointNominalConfig(monoped->getDOF()+1), jointVelocityTarget(monoped->getDOF());
-    jointVelocityTarget.setZero();
-    
-    jointNominalConfig << 0, 0, base_height_initial, 1, 0, 0, 0, 
-                          0,0,0;//actuator angles
-
-
-   
-
     if(t<2)
         {
           
@@ -530,43 +521,18 @@ int main(int argc, char **argv)
         monoped->setGeneralizedForce(tau_9);
 
         std::cout<<"\n"<<"Generalized Force:"<<monoped->getGeneralizedForce();
-        std::cout<<"\n"<<"Generalized FF Force:"<<monoped->getFeedForwardGeneralizedForce()<<"\n";
-        for (size_t k = 0; k < monoped->getGeneralizedCoordinateDim() ; k++)
-        {
-         
-         //only update the actuator angles
-         if(k>=7)
-         jointNominalConfig(k) += q0(k-7);
-
-         }
-       
-         //updates angles
-        monoped->setPdTarget(jointNominalConfig, jointVelocityTarget);
-    
-      //code to repeat the cycle from t=0 to t=2 and reverse alternatively 
-      /*if(t<2 && reverse)
-          t+=0.1;
         
-        else 
-          {if(t>0 )
-          {t -=0.1;
-           reverse = false;}
-           else
-             reverse = true;}
-*/
-       
-          
-          std::cout<<std::endl<<"t:"<<t<<std::endl;
-          std::cout<<std::endl<<"Contact force of ee @ time t(towr):"<<std::endl;
-         
-          std::cout<<Force_towr<<std::endl;
+        std::cout<<std::endl<<"t:"<<t<<std::endl;
+        std::cout<<std::endl<<"Contact force of ee @ time t(towr):"<<std::endl;
+        
+        std::cout<<Force_towr<<std::endl;
 
-          //data collection for plots
-          time.push_back(t);
-          F_towr.push_back(mag_vector(Force_towr));
-          F_raisim.push_back(mag_vector(calc_force_tip(tau_3_temp,q0)));
-          t+=0.01;
-          }
+        //data collection for plots
+        time.push_back(t);
+        F_towr.push_back(mag_vector(Force_towr));
+        F_raisim.push_back(mag_vector(calc_force_tip(tau_3_temp,q0)));
+        t+=0.01;
+        }
 
   };
   
@@ -586,13 +552,13 @@ int main(int argc, char **argv)
 
 
   //finally plot the results
-  plt::figure_size(1200, 780);
-  plt::plot(time, F_towr,{{"label", "towr"}});
-  plt::plot(time,F_raisim,{{"label", "raisim"}});
-  std::string filename = VectortoString(Target_base);
-  std::string plot_path = "../Plots/force_input_frm_towr->raisim:Target:("+filename+").png";
-  std::cout << "Saving result to " << plot_path << std::endl;;
-  plt::save(plot_path);
+  // plt::figure_size(1200, 780);
+  // plt::plot(time, F_towr,{{"label", "towr"}});
+  // plt::plot(time,F_raisim,{{"label", "raisim"}});
+  // std::string filename = VectortoString(Target_base);
+  // std::string plot_path = "../Plots/force_input_frm_towr->raisim:Target:("+filename+").png";
+  // std::cout << "Saving result to " << plot_path << std::endl;;
+  // plt::save(plot_path);
 
   return 0;
 }
