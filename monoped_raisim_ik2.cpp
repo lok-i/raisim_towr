@@ -125,7 +125,7 @@ world.setTimeStep(0.0025);
   vis->setDesiredFPS(25);
 
   //simulation is automatically stepped, if is false
-  raisim::gui::manualStepping = false; 
+  raisim::gui::manualStepping = true; 
   //raisim::gui::Collisionbodies = true; 
   /// starts visualizer thread
   vis->initApp();
@@ -147,7 +147,7 @@ world.setTimeStep(0.0025);
   
   monoped->setGeneralizedCoordinate({   0, 0, base_height_initial, //base co ordinates 
                                         1, 0, 0, 0,  //orientation 
-                                        0,1.09542,-2.3269});
+                                        0,0,0});
 
 
 
@@ -219,7 +219,7 @@ if (actuators_only)
 
                                         1, 0, 0,0, 
 
-                                         0,1.09542,-2.3269});
+                                         0,0,0});
     }
 
     if (controlDecimation % 50 != 0)
@@ -232,7 +232,7 @@ if (actuators_only)
     
     jointNominalConfig << 0, 0, base_height_initial, 
                           1, 0, 0, 0, 
-                          0,1.09542,-2.3269;
+                          0,0,0;
 
 
    
@@ -240,29 +240,29 @@ if (actuators_only)
 
 
 
-        Eigen::Vector3d Base(0,0,base_height_initial);
-        Eigen::Vector3d ee_grnd;//={0.2,0.2,0.2};//fn_modified_sine(t,0.9,100); //end effector wrt ground 
+       //  Eigen::Vector3d Base(0,0,base_height_initial);
+       //  Eigen::Vector3d ee_grnd;//={0.2,0.2,0.2};//fn_modified_sine(t,0.9,100); //end effector wrt ground 
         
 
-        std::cout<<"co_ordianates"<<"\t";
-        for (int j =0;j<3;j++)
-        std::cin>>ee_grnd(j);
+       //  std::cout<<"co_ordianates"<<"\t";
+       //  for (int j =0;j<3;j++)
+       //  std::cin>>ee_grnd(j);
 
-        std::cout<<"ee_grnd:"<<ee_grnd<<std::endl;
-        Eigen::Vector3d ee_H = grnd_ref_to_base_ref(ee_grnd,Base);//end effector wrt base
-        std::cout<<"ee_H:"<<ee_H<<std::endl;
-        Eigen::Vector3d q0 =leg.GetJointAngles(ee_H);
-        std::cout<<"q0:\n"<<q0<<std::endl;
-       // monoped->setGeneralizedCoordinate({0,0,base_height_initial,1,0,0,0,q0[0],q0[1],q0[2]});
-         t+= world.getTimeStep();
+       //  std::cout<<"ee_grnd:"<<ee_grnd<<std::endl;
+       //  Eigen::Vector3d ee_H = grnd_ref_to_base_ref(ee_grnd,Base);//end effector wrt base
+       //  std::cout<<"ee_H:"<<ee_H<<std::endl;
+       //  Eigen::Vector3d q0 =leg.GetJointAngles(ee_H);
+       //  std::cout<<"q0:\n"<<q0<<std::endl;
+       // // monoped->setGeneralizedCoordinate({0,0,base_height_initial,1,0,0,0,q0[0],q0[1],q0[2]});
+       //   t+= world.getTimeStep();
 
         for (size_t k = 0; k < monoped->getGeneralizedCoordinateDim() ; k++)
         {
          
          //if(k<=2)
          //jointNominalConfig(k) = Base(k);
-         if(k>=7)
-         jointNominalConfig(k) = q0(k-7);//distribution(generator);
+        // if(k>=7)
+         //jointNominalConfig(k) = q0(k-7);//distribution(generator);
 
          }
        

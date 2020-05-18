@@ -28,6 +28,8 @@
 #include "raisimKeyboardCallback.hpp"
 #include "helper.hpp"
 
+#define base_init_height 0.72
+
 void setupCallback() {
   auto vis = raisim::OgreVis::get();
 
@@ -55,11 +57,75 @@ void setupCallback() {
   vis->getCameraMan()->setTopSpeed(5);
 }
 
+
+
+
+void _state(auto & monoped)
+
+{
+
+raisim::Vec<3> point_W;
+monoped->getFramePosition(0,point_W);
+std::cout<<"\n\n"<<"Root frame position\n";
+
+for(int i=0;i<3;i++)
+  std::cout<<point_W[i]<<"\t";
+
+raisim::Mat<3, 3> orientation_W;
+monoped->getFrameOrientation(0,orientation_W);
+std::cout<<"\n\n"<<"Root frame orientation\n";
+for(int i =0;i<3;i++)
+  {std::cout<<"\n";
+   for(int j=0;j<3;j++)
+      std::cout<<orientation_W(i,j)<<"\t";
+
+  }
+
+
+
+raisim::VecDyn GenCo(monoped->getGeneralizedCoordinate());
+raisim::VecDyn GenW(monoped->getGeneralizedVelocity());
+
+
+
+std::cout<<"\n\n"<<"Generalized Co_ordinates (for joint angles)\n";
+
+for (int i =0;i<10;i++)
+std::cout<<GenCo.v[i]<<"\t";
+
+
+
+std::cout<<"\n\n"<<"Generalized Velocities (for joint Velocities)\n";
+
+for (int i =0;i<9;i++)
+std::cout<<GenW.v[i]<<"\t";
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 int main(int argc, char **argv) {
   /// create raisim world
   raisim::World world;
   
-  //world.setGravity({0,0,0}); // by default gravity is set to {0,0,g}
+  world.setGravity({0,0,0}); // by default gravity is set to {0,0,g}
   world.setTimeStep(0.0025);
 
   auto vis = raisim::OgreVis::get();
@@ -75,7 +141,7 @@ int main(int argc, char **argv) {
   vis->setDesiredFPS(25);
 
   //simulation is automatically stepped, if is false
-  raisim::gui::manualStepping = false; 
+  raisim::gui::manualStepping = true; 
   //raisim::gui::Collisionbodies = true; 
   /// starts visualizer thread
   vis->initApp();
@@ -98,8 +164,8 @@ int main(int argc, char **argv) {
   auto monoped = world.addArticulatedSystem(raisim::loadResource("monoped/monoped.urdf"));
   auto monopedVis = vis->createGraphicalObject(monoped, "monoped");
   
-  monoped->setGeneralizedCoordinate({   0, 0, 0.95, //base co ordinates 
-                                        1, 0, 0, 0,  //orientation 
+  monoped->setGeneralizedCoordinate({   0, 0, base_init_height, //base co ordinates 
+                                        0, 0, 0, 1,  //orientation 
                                         0, 0, 0});
 
 
@@ -123,18 +189,34 @@ int main(int argc, char **argv) {
   std::default_random_engine generator;
   std::normal_distribution<double> distribution(0.0, 0.7);
   std::srand(std::time(nullptr));
- // monoped->printOutBodyNamesInOrder();
- 
+   monoped->printOutBodyNamesInOrder();
+
+
+
+
+
+std::cout<<"\n\n"<<"Frames\n";
+monoped->printOutFrameNamesInOrder();
+std::cout<<"\n\n";  
+
+
 
 
   // lambda function for the controller
   auto controller = [&monoped ,&generator, &distribution]() {
     static size_t controlDecimation = 0;
 
-    if (controlDecimation++ % 2500 == 0)
-      monoped->setGeneralizedCoordinate({0, 0, 0.95,
+  
 
-                                        1, 0, 0,0, 
+
+  _state(monoped);
+
+
+
+    if (controlDecimation++ % 10000 == 0)
+      monoped->setGeneralizedCoordinate({0, 0, base_init_height,
+
+                                        0, 0,1,0 ,
 
                                         0, 0,0});
 
@@ -144,20 +226,17 @@ int main(int argc, char **argv) {
     /// laikago joint PD controller
     Eigen::VectorXd jointNominalConfig(monoped->getDOF()+1), jointVelocityTarget(monoped->getDOF());
     jointVelocityTarget.setZero();
-    jointNominalConfig << 0, 0, 0, 
+    jointNominalConfig << 0, 0, base_init_height, 
                           0, 0, 0, 0, 
-                          0, 0, 0;
+                          1.57, 1.57, 1.57;
 
-     for (size_t j = 0; j < N; j++) {
-      
-      for (size_t j = 0; j < N; j++) {
-             jointNominalConfig.setZero();
+        
 
         for (size_t k = 0; k < monoped->getGeneralizedCoordinateDim() ; k++)
         {
         
 
-         jointNominalConfig(k) += distribution(generator);
+         //jointNominalConfig(k) += distribution(generator);
 
 
          }
@@ -166,8 +245,7 @@ int main(int argc, char **argv) {
       
         monoped->setPdTarget(jointNominalConfig, jointVelocityTarget);
     
-      }}
-    
+      
 
     
 
