@@ -15,9 +15,9 @@ void forward_kinematics(Eigen::Vector3d &end_effector_pos, Eigen::Vector3d &thet
     end_effector_pos = [x,y,z] in base frame
     l1, l2, l3 = link lengths
     */
-    end_effector_pos[0] = l2*cos(thetas[1]) + l3*cos(thetas[1] + thetas[2]);
-    end_effector_pos[1] = (l2*sin(thetas[1]) + l3*sin(thetas[1] + thetas[2]))*sin(thetas[0]);
-    end_effector_pos[2] = l1 + (l2*sin(thetas[1]) + l3*sin(thetas[1] + thetas[2]))*cos(thetas[0]);
+    end_effector_pos[0] = l2*cos(thetas[1] + PI/2) + l3*cos(thetas[1] + PI/2 + thetas[2]);
+    end_effector_pos[1] = (l2*sin(thetas[1] + PI/2) + l3*sin(thetas[1] + PI/2 + thetas[2]))*sin(thetas[0]);
+    end_effector_pos[2] = l1 + (l2*sin(thetas[1] + PI/2) + l3*sin(thetas[1] + PI/2 + thetas[2]))*cos(thetas[0]);
 }
 
 
@@ -29,9 +29,12 @@ void jacobian(Eigen::Matrix<double, 3, 3> &jacob, Eigen::Vector3d &thetas, float
     jacob = Dq/Dthetas where q = [x,y,z]
     l1, l2, l3 = link lengths
     */
-   jacob << -(l2*cos(thetas[1])*sin(thetas[0])) - l3*cos(thetas[1] + thetas[2])*sin(thetas[0]),-(l2*cos(thetas[0])*sin(thetas[1])) - l3*cos(thetas[0])*sin(thetas[1] + thetas[2]),-(l3*cos(thetas[0])*sin(thetas[1] + thetas[2])),
-   l2*cos(thetas[0])*cos(thetas[1]) + l3*cos(thetas[0])*cos(thetas[1] + thetas[2]),-(l2*sin(thetas[0])*sin(thetas[1])) - l3*sin(thetas[0])*sin(thetas[1] + thetas[2]),-(l3*sin(thetas[0])*sin(thetas[1] + thetas[2])),
-   0,l2*cos(thetas[1]) + l3*cos(thetas[1] + thetas[2]),l3*cos(thetas[1] + thetas[2]);
+//    jacob << -(l2*cos(thetas[1])*sin(thetas[0])) - l3*cos(thetas[1] + thetas[2])*sin(thetas[0]),-(l2*cos(thetas[0])*sin(thetas[1])) - l3*cos(thetas[0])*sin(thetas[1] + thetas[2]),-(l3*cos(thetas[0])*sin(thetas[1] + thetas[2])),
+//    l2*cos(thetas[0])*cos(thetas[1]) + l3*cos(thetas[0])*cos(thetas[1] + thetas[2]),-(l2*sin(thetas[0])*sin(thetas[1])) - l3*sin(thetas[0])*sin(thetas[1] + thetas[2]),-(l3*sin(thetas[0])*sin(thetas[1] + thetas[2])),
+//    0,l2*cos(thetas[1]) + l3*cos(thetas[1] + thetas[2]),l3*cos(thetas[1] + thetas[2]);
+   double theta1 = thetas[1]+PI/2;
+   jacob << 0,-(l2*sin(theta1)) - l3*sin(theta1 + thetas[2]),-(l3*sin(theta1 + thetas[2])),cos(thetas[0])*(l2*sin(theta1) + l3*sin(theta1 + thetas[2])),(l2*cos(theta1) + l3*cos(theta1 + thetas[2]))*sin(thetas[0]),l3*cos(theta1 + thetas[2])*sin(thetas[0]),
+   -(sin(thetas[0])*(l2*sin(theta1) + l3*sin(theta1 + thetas[2]))),cos(thetas[0])*(l2*cos(theta1) + l3*cos(theta1 + thetas[2])),l3*cos(thetas[0])*cos(theta1 + thetas[2]);
 }
 
 void inverse_dynamics(Eigen::Vector3d &torques, Eigen::Vector3d &force, Eigen::Vector3d &thetas, float l1 = L1, float l2 = L2, float l3 = L3)
@@ -62,11 +65,12 @@ void inverse_kinematics(Eigen::Vector3d &thetas, Eigen::Vector3d &end_effector_p
    float z = end_effector_pos[2];
    thetas[0] = atan2(y, z-l1);
    r = sqrt((z-l1)*(z-l1) + y*y);
-   t = (4*l3*r + sqrt(16*pow(l3,2)*pow(r,2) - 4*(-pow(l2,2) + pow(l3,2) + pow(r,2) - 2*l3*x + pow(x,2))*(-pow(l2,2) + pow(l3,2) + pow(r,2) + 2*l3*x + pow(x,2))))/
-   (2.*(-pow(l2,2) + pow(l3,2) + pow(r,2) + 2*l3*x + pow(x,2)));
+   t = (-4*l3*r + sqrt(16*pow(l3,2)*pow(r,2) - 4*(-pow(l2,2) + pow(l3,2) + pow(r,2) - 2*l3*x + pow(x,2))*(-pow(l2,2) + pow(l3,2) + pow(r,2) + 2*l3*x + pow(x,2))))/
+   (2.*(pow(l2,2) - pow(l3,2) - pow(r,2) - 2*l3*x - pow(x,2)));
    theta23 = atan2(2*t, 1-t*t);
    thetas[1] = atan2(r- l3*sin(theta23), x - l3*cos(theta23));
    thetas[2] = theta23 - thetas[1];
+   thetas[1] -= PI/2;
 }
 
 
