@@ -55,7 +55,7 @@ void InitWorld()
     */
   ground = world.addGround();
   monoped = world.addArticulatedSystem(raisim::loadResource("monoped/monoped.urdf"));
-  world.setGravity({0,0,-9.82}); // by default gravity is set to {0,0,g}
+  world.setGravity({0,0,0}); // by default gravity is set to {0,0,g}
   world.setTimeStep(0.0025);
   monoped->setGeneralizedCoordinate({   0, 0, 1, //base coordinates 0.5 is appropriate height
           1, 0, 0, 0,  //orientation 
@@ -70,8 +70,8 @@ void InitWorld()
   jointPgain.tail(3).setConstant(200.0);
   jointDgain.tail(3).setConstant(10.0);
   monoped->setGeneralizedForce(Eigen::VectorXd::Zero(monoped->getDOF()));
-  monoped->setControlMode(raisim::ControlMode::PD_PLUS_FEEDFORWARD_TORQUE);
-  monoped->setPdGains(jointPgain, jointDgain);
+  monoped->setControlMode(raisim::ControlMode::FORCE_AND_TORQUE);
+  // monoped->setPdGains(jointPgain, jointDgain);
   monoped->setName("monoped");
   // monoped->printOutBodyNamesInOrder();
   // std::vector<std::string> names = monoped->getMovableJointNames();
@@ -134,9 +134,37 @@ int main(int argc, char **argv)
     vis->getCameraMan()->setYawPitchDist(Ogre::Radian(0), -Ogre::Radian(M_PI_4), 2);
 
     /// run the app
-    auto controller = [&monoped]() 
+    double t = 0.0;
+    auto controller = [&monoped, &world, &t]() 
     {
-      
+      float amp = 0.05;
+      float omega = 10;
+      if(ON_RACK)
+      {
+        // Vector3d end_effector_pos( amp*sin(t*omega),0.1,  amp*cos(t*omega)+0.4);
+        // Vector3d end_effector_pos(0.0,0.1,0.4);
+        // Vector3d joint_pos;
+        // Vector3d fwd_kin_pos;
+        // inverse_kinematics(joint_pos,end_effector_pos);
+        // monoped->setGeneralizedCoordinate({0, 0, 1, 1,0,0,0, joint_pos[0], joint_pos[1], joint_pos[2]});
+        // forward_kinematics(fwd_kin_pos, joint_pos);
+        // fwd_kin_pos -= end_effector_pos;
+        // std::cout<<fwd_kin_pos[0]<<","<<fwd_kin_pos[1]<<","<<fwd_kin_pos[2]<<std::endl; 
+        Vector3d end_effector_force(0.,0.0,0.001);
+        Vector3d joint_pos;
+        auto temp = monoped->getGeneralizedCoordinate();
+        joint_pos[0] = temp[7];
+        joint_pos[1] = temp[8];
+        joint_pos[2] = temp[9];
+        Vector3d torques;
+        inverse_dynamics(torques, end_effector_force, joint_pos);
+        monoped->setGeneralizedForce({0,0,0,0,0,0,torques[0],torques[1],torques[2]}); //One less value than generalized coordinates
+        // monoped->setGeneralizedForce({0,0,0,0,0,0,0.0,0.0,0.01});
+        // monoped->setGeneralizedCoordinate({0, 0, 1, 1,0,0,0, joint_pos[0], 1.5, joint_pos[2]});
+        // std::cout<<torques[0]<<","<<torques[1]<<","<<torques[2]<<std::endl;
+      }
+
+      t += world.getTimeStep();
     };
 
   vis->setControlCallback(controller);
